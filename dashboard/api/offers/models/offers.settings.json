@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "offers",
+  "info": {
+    "name": "offers",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "price": {
+      "type": "string"
+    },
+    "priceInfo": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "link": {
+      "type": "string"
+    },
+    "uId": {
+      "type": "biginteger",
+      "unique": true
+    },
+    "imageUrl": {
+      "type": "string"
+    },
+    "jk": {
+      "type": "string"
+    },
+    "jkLink": {
+      "type": "string"
+    },
+    "inBitrix": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "proxies",
+  "info": {
+    "name": "proxies",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "proxy": {
+      "type": "string"
+    },
+    "unsuccesfulAttempts": {
+      "type": "integer"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

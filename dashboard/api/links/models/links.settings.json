@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "links",
+  "info": {
+    "name": "Links",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "url": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "enumeration",
+      "enum": [
+        "parse_all",
+        "parse_first_pages"
+      ],
+      "default": "parse_first_pages"
+    },
+    "firstAction": {
+      "type": "enumeration",
+      "enum": [
+        "dont_add_first_parse",
+        "add_first_parse"
+      ],
+      "default": "dont_add_first_parse"
+    },
+    "responsible": {
+      "type": "integer"
+    },
+    "isFirstParse": {
+      "type": "boolean",
+      "default": true
+    },
+    "frequency": {
+      "type": "string",
+      "regex": "(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\\d+(ns|us|µs|ms|s|m|h))+)|((((\\d+,)+\\d+|(\\d+(\\/|-)\\d+)|\\d+|\\*) ?){5,7})",
+      "required": true
+    }
+  }
+}
