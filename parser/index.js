@@ -19,7 +19,6 @@ class Parser {
     }
 
     async start() {
-        console.log("started")
         this.axios = axios.create()
         this.axios.defaults.headers = {
             "referrer": "https://www.google.com/",
@@ -70,6 +69,9 @@ class Parser {
 
         this.jobs = []
         const links = await this.strapi.get("links")
+
+        this.logger.info("Links loaded, ids: " + links.map(e => e.id).join(", "))
+
         for(let link of links) {
             this.jobs.push(
                 cron.schedule(link.frequency, async () => {
@@ -79,7 +81,6 @@ class Parser {
                 })
             )
         }
-
     }
 
     async stop() {
@@ -172,10 +173,10 @@ class Parser {
                         p: page
                     }
                 })
+
                 await this.addOffers(data, link)
             }))
         }
-
     }
 
     async axiosRetry(url, options = {}, retries = 3) {
@@ -191,7 +192,6 @@ class Parser {
             return data
         }
     }
-
 }
 
 module.exports = Parser

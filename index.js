@@ -1,6 +1,6 @@
 const Strapi = require("./parser/strapi")
 const Parser = require("./parser")
-const server = require("./parser/server")
+const Server = require("./parser/server")
 const strapi = require("strapi")
 
 //logger
@@ -29,14 +29,17 @@ class Index {
             ]
         });
 
-        await server.start()
-
         this.logger.info("started")
         await strapi({dir: "./dashboard"}).start()
 
         this.strapi = new Strapi(this)
         this.config = await this.strapi.get("config")
+
         this.parser = new Parser(this)
+
+        this.server = new Server(this)
+        await this.server.start()
+
         await this.parser.start()
     }
 }
