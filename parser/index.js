@@ -59,7 +59,7 @@ class Parser {
                 enabled: proxy.unsuccesfulAttempts < this.config.proxyAttemptsLimit ? true : false
             })
 
-            this.proxies = await this.strapi.get("proxies")
+            this.proxies = await this.strapi.get("proxies", {enabled: true})
 
             throw new Error("proxy error")
         }
@@ -148,6 +148,7 @@ class Parser {
     }
 
     async parseUrl(link) {
+        this.proxies = await this.strapi.get("proxies", {enabled: true})
         const pageCount = await this.getPageCount(link.url)
 
         const parsedUrl = new URL(link.url)

@@ -19,6 +19,7 @@ class Server {
 
         app.post("/update", async (req, res) => {
             if(req.body?.model === "links") {
+                that.logger.info(JSON.stringify(req.body))
                 that.logger.info("restarting because links had been modified")
                 await that.parser.stop()
                 await that.parser.start()
