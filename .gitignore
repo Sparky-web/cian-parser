@@ -1,1 +1,5 @@
 node_modules
+/parser/logs/combined.log
+/parser/logs/common.log
+/parser/logs/error.log
+/parser/logs/warn.log
