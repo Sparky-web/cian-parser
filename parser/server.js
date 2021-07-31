@@ -13,8 +13,15 @@ class Server {
 
         app.use(express.json())
         app.get("/logs/:name", async (req, res) => {
-            const data = await fs.readFile(`${__dirname}/logs/${req.params.name}.log`)
-            res.send(data?.toString())
+            // const data = await fs.readFile(`${__dirname}/logs/${req.params.name}.log`)
+            // res.send(data?.toString()?.replace(/\\n/ig, "<br />"))
+
+            that.logger.query({
+                limit: 100,
+                order: 'desc',
+            }, (err, result) => {
+                res.send(result.file.map(e => `${e.level} ${e.timestamp} || ${e.message}`).join("<br />"))
+            })
         })
 
         app.post("/update", async (req, res) => {
@@ -33,6 +40,7 @@ class Server {
         this.app = app
         return app
     }
+
 
 }
 

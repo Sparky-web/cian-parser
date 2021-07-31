@@ -23,14 +23,6 @@
       ],
       "default": "parse_first_pages"
     },
-    "firstAction": {
-      "type": "enumeration",
-      "enum": [
-        "dont_add_first_parse",
-        "add_first_parse"
-      ],
-      "default": "dont_add_first_parse"
-    },
     "responsible": {
       "type": "integer"
     },

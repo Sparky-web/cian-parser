@@ -18,12 +18,6 @@
     "description": {
       "type": "text"
     },
-    "price": {
-      "type": "string"
-    },
-    "priceInfo": {
-      "type": "string"
-    },
     "address": {
       "type": "string"
     },
@@ -31,11 +25,8 @@
       "type": "string"
     },
     "uId": {
-      "type": "biginteger",
+      "type": "integer",
       "unique": true
-    },
-    "imageUrl": {
-      "type": "string"
     },
     "jk": {
       "type": "string"
@@ -46,6 +37,31 @@
     "inBitrix": {
       "type": "boolean",
       "default": false
+    },
+    "price": {
+      "type": "integer"
+    },
+    "contacts": {
+      "type": "component",
+      "repeatable": true,
+      "component": "offers.contact"
+    },
+    "floorNumber": {
+      "type": "integer"
+    },
+    "parsedFromLink": {
+      "model": "links"
+    },
+    "area": {
+      "type": "float"
+    },
+    "dealType": {
+      "type": "string"
+    },
+    "images": {
+      "type": "component",
+      "repeatable": true,
+      "component": "offers.image"
     }
   }
 }
