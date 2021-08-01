@@ -4,6 +4,7 @@ const _ = require("lodash")
 class Bx24 {
     constructor(parent) {
         this.logger = parent.logger
+        this.strapi = parent.strapi
     }
 
     objectToQuery(obj, prefix) {
@@ -39,26 +40,30 @@ class Bx24 {
 
         for(let chunk of chunks) {
             await Promise.all(chunk.map(async ({url}) => {
-                const {data: image} = await axios.get(url, {
-                    responseType: 'arraybuffer'
-                })
-                const b64 = Buffer.from(image, 'binary').toString('base64')
+                try {
+                    const {data: image} = await axios.get(url, {
+                        responseType: 'arraybuffer'
+                    })
+                    const b64 = Buffer.from(image, 'binary').toString('base64')
 
-                images.push({
-                    fileData: [
-                        url.substring(url.lastIndexOf('/') + 1),
-                        b64
-                    ]
-                })
+                    images.push({
+                        fileData: [
+                            url.substring(url.lastIndexOf('/') + 1),
+                            b64
+                        ]
+                    })
+                } catch (e) {
+                    this.logger.error("Failed to fetch image: " + url)
+                }
             }))
         }
 
         const params = {
-            TITLE: `${offer.title} ${offer.floorNumber}эт. за ${offer.price} ₽`,
+            TITLE: `Парсер ${offer.parsedFromLink.name} ${offer.floorNumber}эт. за ${offer.price} ₽`,
             'CATEGORY_ID': 9,
             'STAGE_ID': 'C9:14',
             'SOURCE_ID': 79690882901,
-            'UF_CRM_1580558162|[0]': offer.link,
+            'UF_CRM_1580558162': [offer.link],
             'UF_CRM_1584562039332': offer.price,
             'ASSIGNED_BY_ID': offer.parsedFromLink?.responsible,
             'UF_CRM_1584528376285': offer.floorNumber,
@@ -75,6 +80,12 @@ class Bx24 {
             this.objectToQuery({fields: params}))
 
         this.logger.info(`Created deal with id: ${data.result}. Cian offer: ${offer.link}`)
+
+        await this.strapi.update("offers", {
+            ...offer,
+            inBitrix: true
+        })
+
         return data
     }
 

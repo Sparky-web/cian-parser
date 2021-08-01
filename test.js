@@ -43,7 +43,6 @@ class Test {
 
         const offer = (await this.strapi.get("offers"))[0]
         const x = await this.bx24.createEntry(offer)
-        console.log(offer, x)
 
         // await this.parser.start()
     }

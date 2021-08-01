@@ -3,22 +3,23 @@ const jsdom = require("jsdom");
 const {JSDOM} = jsdom;
 const {URL} = require("url")
 const _ = require("lodash")
-const Bx24 = require("./bx24")
 const cron = require('node-cron');
 const httpsProxyAgent = require('https-proxy-agent');
 
 class Parser {
     proxyList = []
     urls = []
-    cookie = ""
 
     constructor(parent) {
         this.config = parent.config
         this.logger = parent.logger
         this.strapi = parent.strapi
+        this.bx24 = parent.bx24
     }
 
     async start() {
+        const that = this;
+
         this.axios = axios.create()
         this.axios.defaults.headers = {
             "referrer": "https://www.google.com/",
@@ -35,7 +36,7 @@ class Parser {
                 const agent = new httpsProxyAgent(proxy.proxy)
                 config.proxy = false
                 config.httpsAgent = agent
-                if(proxy.cookie) config.headers.cookie = proxy.cookie
+                if (proxy.cookie) config.headers.cookie = proxy.cookie
             }
 
             return config;
@@ -47,43 +48,56 @@ class Parser {
             const ip = error.config.httpsAgent.proxy.host
             const port = error.config.httpsAgent.proxy.port
 
-            let proxy = await this.strapi.getProxies({
-                proxy_contains: `${ip}:${port}`
-            })
-            proxy = proxy[0]
-
-            await this.strapi.update("proxies", {
-                ...proxy,
-                unsuccesfulAttempts: proxy.unsuccesfulAttempts ? proxy.unsuccesfulAttempts + 1 : 1,
-                enabled: proxy.unsuccesfulAttempts < this.config.proxyAttemptsLimit ? true : false
-            })
-
-            this.proxies = await this.strapi.get("proxies", {enabled: true})
+            await this.addUnsuccessfulCountToProxy(`${ip}:${port}`)
 
             throw new Error("proxy error")
         }
 
-        this.axios.interceptors.request.use(reqMiddleware.bind(this));
-        this.axios.interceptors.response.use(c => {
-            console.log(c.headers)
+        async function resMiddleware(c) {
+            const document = that.getDocument(c.data)
+            if (document.querySelector("#captcha")) {
+                const ip = c.config.httpsAgent.proxy.host
+                const port = c.config.httpsAgent.proxy.port
+                await this.addUnsuccessfulCountToProxy(`${ip}:${port}`)
+                throw new Error("Captcha, can not proceed")
+            }
+
             return c
-        }, errorHandler.bind(this));
+        }
+
+        this.axios.interceptors.request.use(reqMiddleware.bind(this));
+        this.axios.interceptors.response.use(resMiddleware.bind(this), errorHandler.bind(this));
 
         this.jobs = []
         const links = await this.strapi.get("links")
 
-        this.logger.info("Links loaded, ids: " + links.map(e => e.id).join(", "))
+        this.logger.info("Links loaded, names: " + links.map(e => e.name).join(", "))
 
         for (let link of links) {
             this.jobs.push(
                 cron.schedule(link.frequency, async () => {
                     await this.parseUrl(link)
                         .catch(err => {
-                            this.logger.error(`Parsing error. Id: ${link.id}. Error: ${err.message}`)
+                            this.logger.error(`Parsing error. Link: ${link.name}. Error: ${err.message}`)
                         })
                 })
             )
         }
+    }
+
+    async addUnsuccessfulCountToProxy(proxyString) {
+        let proxy = await this.strapi.getProxies({
+            proxy_contains: proxyString
+        })
+        proxy = proxy[0]
+
+        await this.strapi.update("proxies", {
+            ...proxy,
+            unsuccesfulAttempts: proxy.unsuccesfulAttempts ? proxy.unsuccesfulAttempts + 1 : 1,
+            enabled: proxy.unsuccesfulAttempts < this.config.proxyAttemptsLimit
+        })
+
+        this.proxies = await this.strapi.get("proxies", {enabled: true})
     }
 
     async stop() {
@@ -150,20 +164,29 @@ class Parser {
             parsedFromLink: link.id
         }))
 
+        const createdOffers = []
         for (let offer of newOffers) {
-            await this.strapi.createOffer(offer)
+            createdOffers.push(await this.strapi.createOffer(offer))
+        }
+
+        for (let offer of createdOffers) {
+            try {
+                await this.bx24.createEntry(offer)
+            } catch (e) {
+                this.logger.error("Couldn't create deal for offer id: " + offer.id)
+            }
         }
 
         return newOffers
     }
 
     async parseUrl(link) {
-        this.logger.info(`Parsed started for link id: ${link.id}`)
+        this.logger.info(`Parsed started for link: ${link.name}`)
 
         this.proxies = await this.strapi.get("proxies", {enabled: true})
         const pageCount = await this.getPageCount(link.url)
 
-        this.logger.info("get page count: " + pageCount)
+        this.logger.info(`Got pages on link ${link.name}: ${pageCount}`)
 
         const parsedUrl = new URL(link.url)
         let rawParams = parsedUrl.searchParams
@@ -197,7 +220,12 @@ class Parser {
             }))
         }
 
-        this.logger.info(`Parsing ended for link id: ${link.id}. Items parsed total: ${items.length}, added items: ${addedItems.length}`)
+        if (link.isFirstParse) await this.strapi.update("links", {
+            ...link,
+            isFirstParse: false
+        })
+
+        this.logger.info(`Parsing ended for link: ${link.name}. Items parsed total: ${items.length}, added items: ${addedItems.length}`)
     }
 
     async axiosRetry(url, options = {}, retries = 3) {
@@ -209,11 +237,11 @@ class Parser {
             )
             return data
         } catch (e) {
+            this.logger.error(e.message + ". Retrying.")
             const data = await this.axiosRetry(url, options, (retries - 1))
             return data
         }
     }
-
 }
 
 module.exports = Parser

@@ -2,6 +2,7 @@ const Strapi = require("./parser/strapi")
 const Parser = require("./parser")
 const Server = require("./parser/server")
 const strapi = require("strapi")
+const Bx24 = require("./parser/bx24");
 
 //logger
 const { createLogger, format, transports } = require('winston');
@@ -35,11 +36,12 @@ class Index {
         this.strapi = new Strapi(this)
         this.config = await this.strapi.get("config")
 
+        this.bx24 = new Bx24(this)
         this.parser = new Parser(this)
 
         this.server = new Server(this)
-        await this.server.start()
 
+        await this.server.start()
         await this.parser.start()
     }
 }

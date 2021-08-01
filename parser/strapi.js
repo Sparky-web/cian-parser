@@ -18,7 +18,8 @@ class Strapi {
     }
 
     async createOffer(data) {
-        await this.axios.post("/offers", data)
+        const {data: res} = await this.axios.post("/offers", data)
+        return res
     }
 
     async getLinks(filters) {
@@ -53,10 +54,12 @@ class Strapi {
         })
         return data
     }
+
     async create(type, data, options = {}) {
         const {data: res} = await this.axios.post(`/${type}`, data, options)
         return res
     }
+
     async update(type, data, options = {}) {
         const {data: res} = await this.axios.put(`/${type}/${data.id}`, data, options)
         return res
