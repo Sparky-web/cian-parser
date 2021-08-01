@@ -10,6 +10,7 @@ const httpsProxyAgent = require('https-proxy-agent');
 class Parser {
     proxyList = []
     urls = []
+    cookie = ""
 
     constructor(parent) {
         this.config = parent.config
@@ -34,6 +35,7 @@ class Parser {
                 const agent = new httpsProxyAgent(proxy.proxy)
                 config.proxy = false
                 config.httpsAgent = agent
+                if(proxy.cookie) config.headers.cookie = proxy.cookie
             }
 
             return config;
@@ -62,7 +64,10 @@ class Parser {
         }
 
         this.axios.interceptors.request.use(reqMiddleware.bind(this));
-        this.axios.interceptors.response.use(c => c, errorHandler.bind(this));
+        this.axios.interceptors.response.use(c => {
+            console.log(c.headers)
+            return c
+        }, errorHandler.bind(this));
 
         this.jobs = []
         const links = await this.strapi.get("links")
@@ -208,7 +213,6 @@ class Parser {
             return data
         }
     }
-
 
 }
 

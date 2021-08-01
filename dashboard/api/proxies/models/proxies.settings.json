@@ -21,6 +21,9 @@
     "enabled": {
       "type": "boolean",
       "default": true
+    },
+    "cookie": {
+      "type": "string"
     }
   }
 }
