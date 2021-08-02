@@ -40,6 +40,10 @@
     },
     "name": {
       "type": "string"
+    },
+    "isEnabled": {
+      "type": "boolean",
+      "default": true
     }
   }
 }

@@ -1,5 +1,6 @@
 const express = require("express")
 const fs = require("fs/promises")
+const path = require("path")
 
 class Server {
     constructor(parent) {
@@ -11,7 +12,13 @@ class Server {
         const app = express()
         const that = this;
 
+        app.get("/", (req, res) => {
+            res.sendFile(path.join(__dirname, "../status-panel/build", "index.html"));
+        });
+
         app.use(express.json())
+        app.use(express.static(path.join(__dirname, "../status-panel/build")))
+
         app.get("/logs/:name", async (req, res) => {
             // const data = await fs.readFile(`${__dirname}/logs/${req.params.name}.log`)
             // res.send(data?.toString()?.replace(/\\n/ig, "<br />"))
@@ -23,7 +30,6 @@ class Server {
                 res.send(result.file.map(e => `${e.level} ${e.timestamp} || ${e.message}`).join("<br />"))
             })
         })
-
         app.post("/update", async (req, res) => {
             if(req.body?.model === "links") {
                 that.logger.info(JSON.stringify(req.body))
