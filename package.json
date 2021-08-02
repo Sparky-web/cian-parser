@@ -30,7 +30,6 @@
     "strapi-plugin-upload": "3.6.5",
     "strapi-plugin-users-permissions": "3.6.5",
     "strapi-utils": "3.6.5",
-    "winston": "^3.3.3",
-    "winston-logs-display": "^1.0.0"
+    "winston": "^3.3.3"
   }
 }
