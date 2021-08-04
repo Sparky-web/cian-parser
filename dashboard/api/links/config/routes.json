@@ -29,7 +29,7 @@
       "path": "/links",
       "handler": "links.create",
       "config": {
-        "policies": []
+        "policies": ["webhook"]
       }
     },
     {
@@ -37,7 +37,7 @@
       "path": "/links/:id",
       "handler": "links.update",
       "config": {
-        "policies": []
+        "policies": ["webhook"]
       }
     },
     {
@@ -45,7 +45,7 @@
       "path": "/links/:id",
       "handler": "links.delete",
       "config": {
-        "policies": []
+        "policies": ["webhook"]
       }
     }
   ]

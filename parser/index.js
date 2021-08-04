@@ -5,6 +5,7 @@ const {URL} = require("url")
 const _ = require("lodash")
 const cron = require('node-cron');
 const httpsProxyAgent = require('https-proxy-agent');
+const cronConfig = require("./cron-config")
 
 class Parser {
     proxyList = []
@@ -17,7 +18,7 @@ class Parser {
         this.bx24 = parent.bx24
     }
 
-    async start() {
+    async start(mode) {
         const that = this;
 
         this.axios = axios.create()
@@ -69,13 +70,15 @@ class Parser {
         this.axios.interceptors.response.use(resMiddleware.bind(this), errorHandler.bind(this));
 
         this.jobs = []
-        const links = await this.strapi.get("links")
+        const links = await this.strapi.get("links", {isEnabled: true})
+
+        if(mode === "test") return;
 
         this.logger.info("Links loaded, names: " + links.map(e => e.name).join(", "))
 
         for (let link of links) {
             this.jobs.push(
-                cron.schedule(link.frequency, async () => {
+                cron.schedule(cronConfig[link.frequency], async () => {
                     await this.parseUrl(link)
                         .catch(err => {
                             this.logger.error(`Parsing error. Link: ${link.name}. Error: ${err.message}`)
@@ -110,7 +113,7 @@ class Parser {
     }
 
     async getPageCount(url) {
-        let {data: html} = await this.axiosRetry(url)
+        let {data: html} = await (this.axiosRetry.bind(this))(url)
         const document = this.getDocument(html)
         const itemsCount = +document.querySelector('*[data-name="SummaryHeader"]')
             .textContent.trim().match(/\d{1,5}/ig)[0]
@@ -169,11 +172,13 @@ class Parser {
             createdOffers.push(await this.strapi.createOffer(offer))
         }
 
-        for (let offer of createdOffers) {
-            try {
-                await this.bx24.createEntry(offer)
-            } catch (e) {
-                this.logger.error("Couldn't create deal for offer id: " + offer.id)
+        if(link.shouldAddToBitrix) {
+            for (let offer of createdOffers) {
+                try {
+                    await this.bx24.createEntry(offer)
+                } catch (e) {
+                    this.logger.error("Couldn't create deal for offer id: " + offer.id)
+                }
             }
         }
 
@@ -181,6 +186,8 @@ class Parser {
     }
 
     async parseUrl(link) {
+        const startTime = +new Date()
+
         this.logger.info(`Parsed started for link: ${link.name}`)
 
         this.proxies = await this.strapi.get("proxies", {enabled: true})
@@ -226,6 +233,21 @@ class Parser {
         })
 
         this.logger.info(`Parsing ended for link: ${link.name}. Items parsed total: ${items.length}, added items: ${addedItems.length}`)
+
+        const endTime = +new Date()
+
+        const parsingInfo = {
+            items: items.length,
+            addedItems: addedItems.length,
+            timeElapsed: Math.round((endTime - startTime) / 1000),
+            time: (new Date()).toISOString()
+        }
+
+        await this.strapi.update("links", {
+            ...link,
+            lastParse: parsingInfo
+        })
+        return parsingInfo
     }
 
     async axiosRetry(url, options = {}, retries = 3) {

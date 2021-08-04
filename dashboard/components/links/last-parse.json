@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_links_last_parses",
+  "info": {
+    "name": "lastParse",
+    "icon": "business-time",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "items": {
+      "type": "integer"
+    },
+    "addedItems": {
+      "type": "integer"
+    },
+    "timeElapsed": {
+      "type": "integer"
+    },
+    "time": {
+      "type": "datetime"
+    }
+  }
+}

@@ -30,18 +30,36 @@
       "type": "boolean",
       "default": true
     },
-    "frequency": {
-      "type": "string",
-      "regex": "(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\\d+(ns|us|µs|ms|s|m|h))+)|((((\\d+,)+\\d+|(\\d+(\\/|-)\\d+)|\\d+|\\*) ?){5,7})",
-      "required": true
-    },
-    "lastParse": {
-      "type": "datetime"
-    },
     "name": {
       "type": "string"
     },
     "isEnabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "lastParse": {
+      "type": "component",
+      "repeatable": false,
+      "component": "links.last-parse"
+    },
+    "frequency": {
+      "type": "enumeration",
+      "enum": [
+        "every_minute",
+        "every_5_minutes",
+        "every_10_minutes",
+        "every_15_minutes",
+        "every_30_minutes",
+        "every_60_minutes",
+        "every_2_hours",
+        "every_4_hours",
+        "every_12_hours",
+        "every_day"
+      ],
+      "default": "every_30_minutes",
+      "required": false
+    },
+    "shouldAddToBitrix": {
       "type": "boolean",
       "default": true
     }

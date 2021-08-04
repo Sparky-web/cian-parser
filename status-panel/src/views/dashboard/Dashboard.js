@@ -1,11 +1,31 @@
-import React, {lazy, useEffect, useRef, useState} from 'react'
-import {CBadge, CButton, CCard, CCardBody, CCardHeader, CCol, CRow, CSpinner, CTextarea, CLabel, CToast, CToastBody, CToastHeader, CToaster} from '@coreui/react'
+import React, {forwardRef, lazy, useEffect, useRef, useState} from 'react'
+import {
+    CBadge,
+    CButton,
+    CCard,
+    CCardBody,
+    CCardHeader,
+    CCol,
+    CLabel,
+    CRow,
+    CSpinner,
+    CTextarea,
+    CToast,
+    CToastBody,
+    CToaster,
+    CToastHeader,
+} from '@coreui/react'
+
+import {formatRelative} from "date-fns"
+import ru from "date-fns/locale/ru"
+
 import axios from "axios";
 
 const WidgetsDropdown = lazy(() => import('../widgets/WidgetsDropdown.js'))
 const WidgetsBrand = lazy(() => import('../widgets/WidgetsBrand.js'))
 
 const url = "http://0.0.0.0:1000"
+const apiUrl = "http://0.0.0.0:1001"
 
 const fetchData = async (type, filters = {}) => {
     const {data} = await axios.get(url + "/" + type, {
@@ -14,7 +34,14 @@ const fetchData = async (type, filters = {}) => {
     return data
 }
 const startManualParsing = async (id) => {
-    await new Promise(r => setTimeout(r, 1000))
+    await axios.get(apiUrl + "/start-manual", {params: {id}})
+}
+const count = async (type, filters) => {
+    const {data} = await axios.get(`${url}/${type}/count`, {
+       params: {...filters}
+    })
+
+    return data
 }
 
 const Dashboard = () => {
@@ -25,37 +52,24 @@ const Dashboard = () => {
     const [proxyString, setProxyString] = useState("")
     const [proxyLoading, setProxyLoading] = useState(false)
 
-    const [toast, addToast] = useState(0)
-    const toaster = useRef()
-    const getToast = (title, text) => (
-        <CToast title="CoreUI for React.js">
-            <CToastHeader close>
-                <svg
-                    className="rounded me-2"
-                    width="20"
-                    height="20"
-                    xmlns="http://www.w3.org/2000/svg"
-                    preserveAspectRatio="xMidYMid slice"
-                    focusable="false"
-                    role="img"
-                >
-                    <rect width="100%" height="100%" fill="#007aff"></rect>
-                </svg>
-                <strong className="me-auto">{title}</strong>
-            </CToastHeader>
-            <CToastBody>{text}</CToastBody>
-        </CToast>
-    )
+    const [offers, setOffers] = useState({})
 
     useEffect(() => {
+        fetchInitialData()
+    }, [])
+
+    const fetchInitialData = async () => {
         fetchData("links").then(setLinks)
         fetchData("proxies").then(setProxies)
-    }, [])
+        count("offers", {inBitrix: true}).then(r => setOffers(o =>({...o, count: {...o.count, inBitrix: r}})))
+        count("offers").then(r => setOffers(o =>({...o, count: {...o.count, all: r}})))
+    }
 
     const startParsing = async id => {
         setRunningIds([...runningIds, id])
         try {
             await startManualParsing(id)
+            fetchInitialData()
         } catch (e) {
             console.error(e)
         }
@@ -64,8 +78,7 @@ const Dashboard = () => {
     const addProxies = async () => {
         setProxyLoading(true)
         try {
-            const text = proxyString
-            let arr = text.split("\n")
+            let arr = proxyString.split("\n")
             arr = arr.filter(e =>e)
             arr = arr.map(el => {
                 const segments = el.split(":")
@@ -78,16 +91,17 @@ const Dashboard = () => {
 
             const newProxy = await fetchData("proxies")
             setProxies(newProxy)
-            addToast(getToast("Добавление прокси завершено"))
         } catch (e) {
-           console.error(e)
+            console.error(e)
         }
         setProxyLoading(false)
     }
 
     return (
         <>
-            <WidgetsDropdown/>
+            <h1>Статус-панель</h1>
+            <br/>
+            <WidgetsDropdown links={links} proxies={proxies} offers={offers}/>
             {/*
       <CCard>
         <CCardBody>
@@ -198,14 +212,17 @@ const Dashboard = () => {
                                     <td>
                                         <div><a href={e.url} target="_blank">{e.name}</a></div>
                                         <div className="small text-muted">
-                                            Добавлено: {e.created_at}
+                                            Добавлено {formatRelative(new Date(e.created_at), new Date(), {locale: ru})}
                                         </div>
                                     </td>
                                     <td className="text-center">{
                                         e.isEnabled ? <CBadge color="success">вкл</CBadge> :
                                             <CBadge color="danger">выкл</CBadge>
                                     }</td>
-                                    <td>{e.lastParse}</td>
+                                    <td>
+                                        Завершен {formatRelative(new Date(e.lastParse.time), new Date(), {locale: ru})}
+                                        &nbsp;за {e.lastParse.timeElapsed} секунд, получено офферов: {e.lastParse.items} из них новых: {e.lastParse.addedItems}
+                                    </td>
                                     <td className="text-right">
                                         {runningIds.includes(e.id) ?
                                             <CButton color="warning" disabled><CSpinner color="light"/></CButton> :
@@ -231,11 +248,11 @@ const Dashboard = () => {
                                     <td>
                                         <div>{e.proxy}</div>
                                         <div className="small text-muted">
-                                            Добавлено: {e.created_at}
+                                            Добавлено {formatRelative(new Date(e.created_at), new Date(), {locale: ru})}
                                         </div>
                                     </td>
                                     <td className="text-center">{
-                                        e.isEnabled ? <CBadge color="success">вкл</CBadge> :
+                                        e.enabled ? <CBadge color="success">вкл</CBadge> :
                                             <CBadge color="danger">выкл</CBadge>
                                     }</td>
                                     <td className="text-right">{e.unsuccesfulAttempts}</td>
@@ -243,7 +260,6 @@ const Dashboard = () => {
                                 </tbody>
                             </table>
                             <br/>
-
                             <div>
                                 <h3>Пакетное добавление прокси</h3>
                                 <CLabel>Http прокси (каждая с новой строки) в формате ip:port:username:password</CLabel>
@@ -258,16 +274,18 @@ const Dashboard = () => {
                                     <CButton color={"primary"} onClick={addProxies}>Добавить</CButton>
                                 }
                             </div>
+
+                            <CToast autohide={false} className="align-items-center">
+                                <div className="d-flex">
+                                    <CToastBody>Hello, world! This is a toast message.</CToastBody>
+                                </div>
+                            </CToast>
                         </CCardBody>
-
-
                     </CCard>
                 </CCol>
             </CRow>
-
-            <CToaster ref={toaster} push={toast} placement="top-end" />
         </>
     )
-}
+};
 
 export default Dashboard
