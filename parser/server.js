@@ -22,9 +22,6 @@ class Server {
             res.sendFile(path.join(__dirname, "../status-panel/build", "index.html"));
         });
         app.get("/logs/:name", async (req, res) => {
-            // const data = await fs.readFile(`${__dirname}/logs/${req.params.name}.log`)
-            // res.send(data?.toString()?.replace(/\\n/ig, "<br />"))
-
             that.logger.query({
                 limit: 100,
                 order: 'desc',

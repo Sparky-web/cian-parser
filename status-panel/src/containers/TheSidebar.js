@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  CCreateElement,
   CSidebar,
   CSidebarBrand,
   CSidebarNav,
@@ -40,15 +39,15 @@ const TheSidebar = () => {
       </CSidebarBrand>
       <CSidebarNav>
 
-        <CCreateElement
-          items={navigation}
-          components={{
-            CSidebarNavDivider,
-            CSidebarNavDropdown,
-            CSidebarNavItem,
-            CSidebarNavTitle
-          }}
-        />
+        {/*<CCreateElement*/}
+        {/*  items={navigation}*/}
+        {/*  components={{*/}
+        {/*    CSidebarNavDivider,*/}
+        {/*    CSidebarNavDropdown,*/}
+        {/*    CSidebarNavItem,*/}
+        {/*    CSidebarNavTitle*/}
+        {/*  }}*/}
+        {/*/>*/}
       </CSidebarNav>
       <CSidebarMinimizer className="c-d-md-down-none"/>
     </CSidebar>

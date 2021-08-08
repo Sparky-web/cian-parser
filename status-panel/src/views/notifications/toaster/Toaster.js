@@ -14,7 +14,6 @@ import {
   CContainer,
   CRow,
   CCol,
-  CFormGroup,
   CLabel
 } from '@coreui/react'
 import { DocsLink } from 'src/reusable'
@@ -74,68 +73,6 @@ const Toaster = () => {
             <CCol sm="12" lg="6">
               <CForm>
                 <h5>Add toast with following props:</h5>
-
-                <CFormGroup variant="custom-checkbox" className="my-2 mt-4">
-                  <CInputCheckbox
-                    id="autohide"
-                    checked={autohide}
-                    onChange={e => { setAutohide(e.target.checked) }}
-                    custom
-                  />
-                  <CLabel variant="custom-checkbox" htmlFor="autohide">
-                    Autohide of the toast
-                  </CLabel>
-                </CFormGroup>
-                {
-                  autohide &&
-                  <CFormGroup className="my-2">
-                    <CLabel htmlFor="ccyear">Time to autohide</CLabel>
-                    <CInput
-                      type="number"
-                      value={autohideValue}
-                      onChange={e => {
-                        setAutohideValue(Number(e.target.value))
-                      }}
-                    />
-                  </CFormGroup>
-                }
-
-                <CFormGroup className="my-2">
-                  <CLabel htmlFor="ccyear">Position</CLabel>
-                  <select
-                    className="form-control"
-                    value={position}
-                    onChange={e => {setPosition(e.target.value)}}
-                  >
-                    {
-                      positions.map((position, i)=>(
-                        <option key={i}>{position}</option>
-                      ))
-                    }
-                  </select>
-                </CFormGroup>
-
-                <CFormGroup variant="custom-checkbox" className="my-2">
-                  <CInputCheckbox
-                    id="fade"
-                    checked={fade}
-                    onChange={e => { setFade(e.target.checked) }}
-                    custom
-                  />
-                  <CLabel variant="custom-checkbox" htmlFor="fade">fade</CLabel>
-                </CFormGroup>
-
-                <CFormGroup variant="custom-checkbox" className="my-2">
-                  <CInputCheckbox
-                    id="close"
-                    custom
-                    checked={closeButton}
-                    onChange={e=> { setCloseButton(e.target.checked) }}
-                  />
-                  <CLabel variant="custom-checkbox" htmlFor="close">
-                    closeButton
-                  </CLabel>
-                </CFormGroup>
 
                 <CButton
                   className="mr-1 w-25"

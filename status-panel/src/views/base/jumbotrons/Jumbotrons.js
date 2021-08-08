@@ -8,7 +8,6 @@ import {
   CContainer,
   CJumbotron,
   CRow,
-  CEmbed,
   CEmbedItem
 } from '@coreui/react'
 import { DocsLink } from '../../../reusable'
@@ -62,9 +61,6 @@ const Jumbotrons = () => {
               Embed
             </CCardHeader>
             <CCardBody>
-              <CEmbed>
-                <CEmbedItem src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0"/>
-              </CEmbed>
             </CCardBody>
           </CCard>
         </CCol>

@@ -9,7 +9,7 @@ const WidgetsDropdown = ({links, proxies, offers}) => {
             <CCol sm="6" lg="3">
                 <CWidgetDropdown
                     color="gradient-primary"
-                    header={links.filter(el => el.isEnabled).length}
+                    header={links.filter(el => el.isEnabled).length + ""}
                     text="Ссылок активно"
                     footerSlot={
                         <div

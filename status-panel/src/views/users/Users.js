@@ -6,7 +6,6 @@ import {
   CCardBody,
   CCardHeader,
   CCol,
-  CDataTable,
   CRow,
   CPagination
 } from '@coreui/react'
@@ -46,29 +45,29 @@ const Users = () => {
             <small className="text-muted"> example</small>
           </CCardHeader>
           <CCardBody>
-          <CDataTable
-            items={usersData}
-            fields={[
-              { key: 'name', _classes: 'font-weight-bold' },
-              'registered', 'role', 'status'
-            ]}
-            hover
-            striped
-            itemsPerPage={5}
-            activePage={page}
-            clickableRows
-            onRowClick={(item) => history.push(`/users/${item.id}`)}
-            scopedSlots = {{
-              'status':
-                (item)=>(
-                  <td>
-                    <CBadge color={getBadge(item.status)}>
-                      {item.status}
-                    </CBadge>
-                  </td>
-                )
-            }}
-          />
+          {/*<CDataTable*/}
+          {/*  items={usersData}*/}
+          {/*  fields={[*/}
+          {/*    { key: 'name', _classes: 'font-weight-bold' },*/}
+          {/*    'registered', 'role', 'status'*/}
+          {/*  ]}*/}
+          {/*  hover*/}
+          {/*  striped*/}
+          {/*  itemsPerPage={5}*/}
+          {/*  activePage={page}*/}
+          {/*  clickableRows*/}
+          {/*  onRowClick={(item) => history.push(`/users/${item.id}`)}*/}
+          {/*  scopedSlots = {{*/}
+          {/*    'status':*/}
+          {/*      (item)=>(*/}
+          {/*        <td>*/}
+          {/*          <CBadge color={getBadge(item.status)}>*/}
+          {/*            {item.status}*/}
+          {/*          </CBadge>*/}
+          {/*        </td>*/}
+          {/*      )*/}
+          {/*  }}*/}
+          {/*/>*/}
           <CPagination
             activePage={page}
             onActivePageChange={pageChange}

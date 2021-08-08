@@ -250,6 +250,13 @@ class Parser {
         return parsingInfo
     }
 
+    async parseOneUrl(url) {
+        const {data: html} = await this.axiosRetry.get(url)
+        const document = this.getDocument(html)
+
+
+    }
+
     async axiosRetry(url, options = {}, retries = 3) {
         if (retries === 0) throw new Error("retries count extended")
         try {

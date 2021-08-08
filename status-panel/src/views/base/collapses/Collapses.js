@@ -7,8 +7,7 @@ import {
   CCardHeader,
   CCol,
   CCollapse,
-  CFade,
-  CRow 
+  CRow
 } from '@coreui/react';
 import { DocsLink } from '../../../reusable'
 
@@ -129,9 +128,6 @@ const Collapses = () => {
             <DocsLink name="CFade"/>
           </CCardHeader>
           <CCardBody>
-            <CFade timeout={300} in={fade} tag="h5" className="mt-3">
-              This content will fade in and out as the button is pressed...
-            </CFade>
           </CCardBody>
           <CCardFooter>
             <CButton color="primary" onClick={toggleFade}>Toggle Fade</CButton>
