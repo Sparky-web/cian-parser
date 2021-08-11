@@ -16,7 +16,6 @@ import {formatRelative} from "date-fns"
 import ru from "date-fns/locale/ru"
 
 import axios from "axios";
-import Tables from "../base/tables/Tables";
 
 const WidgetsDropdown = lazy(() => import('../widgets/WidgetsDropdown.js'))
 
