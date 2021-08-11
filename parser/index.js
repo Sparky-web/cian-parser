@@ -140,7 +140,7 @@ class Parser {
             address: offer.geo?.address.map(e => e.name).join(", "),
             link: offer.fullUrl,
             uId: offer.cianId,
-            images: offer.photos?.map(photo => ({url: photo.fullUrl})),
+            images: offer.photos?.map(photo => ({url: photo.fullUrl}))?.slice(0, 10),
             jk: offer.geo?.jk?.displayName,
             jkLink: offer.geo?.jk?.fullUrl,
             contacts: offer.phones.map(e => ({
@@ -177,7 +177,7 @@ class Parser {
                 try {
                     await this.bx24.createEntry(offer)
                 } catch (e) {
-                    this.logger.error("Couldn't create deal for offer id: " + offer.id)
+                    this.logger.error("Couldn't create deal for offer id: " + offer.id + ", Reason: " + e.message)
                 }
             }
         }

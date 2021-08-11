@@ -53,7 +53,7 @@ class Bx24 {
                         ]
                     })
                 } catch (e) {
-                    this.logger.error("Failed to fetch image: " + url)
+                    this.logger.error("Failed to fetch image: " + url + " Reason: " + e.message)
                 }
             }))
         }

@@ -23,7 +23,7 @@ class Server {
         });
         app.get("/logs/:name", async (req, res) => {
             that.logger.query({
-                limit: 100,
+                limit: 500,
                 order: 'desc',
             }, (err, result) => {
                 res.send(result.file.map(e => `${e.level} ${e.timestamp} || ${e.message}`).join("<br />"))
@@ -42,7 +42,7 @@ class Server {
         })
         app.get("/start-manual", async (req, res) => {
             try {
-                const {id} = req.params
+                const {id} = req.query
                 const [link] = await this.strapi.get("links", {id})
 
                 const data = await this.parser.parseUrl(link)
