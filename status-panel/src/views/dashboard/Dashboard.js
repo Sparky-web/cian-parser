@@ -61,7 +61,18 @@ const Dashboard = () => {
     }, [])
 
     const fetchInitialData = async () => {
-        fetchData("links").then(setLinks)
+        fetchData("links").then(async links => {
+            setLinks(links)
+            const newLinks =await Promise.all(links.map(async link => {
+                const inBitrix = await count("offers", {inBitrix: true, parsedFromLink: link.id})
+                const all = await count("offers", {parsedFromLink: link.id})
+                return {
+                    ...link,
+                    count: {all, inBitrix}
+                }
+            }))
+            setLinks(newLinks)
+        })
         fetchData("proxies").then(setProxies)
         count("offers", {inBitrix: true}).then(r => setOffers(o => ({...o, count: {...o.count, inBitrix: r}})))
         count("offers").then(r => setOffers(o => ({...o, count: {...o.count, all: r}})))
@@ -98,7 +109,7 @@ const Dashboard = () => {
         setProxyLoading(false)
     }
     const select = (id) => {
-        if(selectedIds.includes(id)) setSelectedIds(selectedIds.filter(e => e !== id))
+        if (selectedIds.includes(id)) setSelectedIds(selectedIds.filter(e => e !== id))
         else setSelectedIds([...selectedIds, id])
     }
 
@@ -129,14 +140,18 @@ const Dashboard = () => {
                             <th>Ссылка</th>
                             <th className="text-center">Статус</th>
                             <th>Последний парсинг</th>
+                            <th className="text-center">Объявлений всего / добавлено в битрикс</th>
                             <th className="text-right">Ручной парсинг</th>
                         </tr>
                         </thead>
                         <tbody>
 
-                        {links.map(e => <tr key={e.id} className={selectedIds.includes(e.id) ? "bg-light text-dark" : ""}>
+                        {links.map(e => <tr key={e.id}
+                                            className={selectedIds.includes(e.id) ? "bg-light text-dark" : ""}>
                             <td>
-                                <input type="checkbox" onChange={() => {select(e.id)}}/>
+                                <input type="checkbox" onChange={() => {
+                                    select(e.id)
+                                }}/>
                             </td>
                             <td>
                                 <div><a href={e.url} target="_blank">{e.name}</a></div>
@@ -155,6 +170,9 @@ const Dashboard = () => {
                                     офферов: {e.lastParse.items} из них новых: {e.lastParse.addedItems}
                                 </>}
                             </td>
+                            <td className="text-center">
+                                {e.count?.all} / {e.count?.inBitrix}
+                            </td>
                             <td className="text-right">
                                 {runningIds.includes(e.id) ?
                                     <CButton color="warning" disabled><CSpinner color="light"/></CButton> :
@@ -168,8 +186,12 @@ const Dashboard = () => {
 
                     {selectedIds.length ? <div className="mt-1">
                         <div>Выбрано ссылок: {selectedIds.length}</div>
-                        <CButton color="success" onClick={() =>{turnLinks("on")}}>Включить</CButton>
-                        <CButton color="danger" className="ml-1" onClick={() =>{turnLinks("off")}}>Отключить</CButton>
+                        <CButton color="success" onClick={() => {
+                            turnLinks("on")
+                        }}>Включить</CButton>
+                        <CButton color="danger" className="ml-1" onClick={() => {
+                            turnLinks("off")
+                        }}>Отключить</CButton>
                     </div> : <div/>}
 
                     <br/>
