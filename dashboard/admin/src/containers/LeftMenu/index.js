@@ -89,7 +89,7 @@ const LeftMenu = ({ shouldUpdateStrapi, version, plugins, setUpdateMenu }) => {
         <LeftMenuLink
           location={location}
           label={"Статус-панель"}
-          destination={"http://194.67.86.134:1001/#/dashboard"}
+          destination={"/"}
           notificationsCount={0}
           search={""}
         />
