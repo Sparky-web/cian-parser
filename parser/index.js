@@ -161,6 +161,35 @@ class Parser {
         return items
     }
 
+    async parseItem(url, responsible) {
+        const {data: html} = await this.axiosRetry(url)
+        const document = this.getDocument(html)
+
+        let text = document.querySelector("body").innerHTML
+            .match(/(?<=_cianConfig\['frontend-offer-card'\] = ).*/g)?.[0]
+
+        text = text.substring(0, text.lastIndexOf("]") + 1)
+        const config = JSON.parse(text)
+        const state =_.find(config, {key: "defaultState"})?.value
+        const offerData = state?.offerData?.offer
+
+        let offer = this.serializeOffer(offerData, document)
+
+        const link = {
+            name: "в ручную",
+            url,
+            responsible,
+            shouldAddToBitrix: true
+        }
+        offer = {
+            ...offer,
+            link: url,
+            parsedFromLink: link
+        }
+
+        return offer
+    }
+
     async addOffers(offers, link) {
         const oldOffers = await this.strapi.getOffers()
 
@@ -255,33 +284,16 @@ class Parser {
         return parsingInfo
     }
 
+    async updateOneUrl(url, dealId) {
+        let offer = await this.parseItem(url)
+        const data = await this.bx24.updateEntry(offer, dealId)
+
+        return data
+    }
+
     async parseOneUrl(url, responsible) {
-        const {data: html} = await this.axiosRetry(url)
-        const document = this.getDocument(html)
-
-        let text = document.querySelector("body").innerHTML
-            .match(/(?<=_cianConfig\['frontend-offer-card'\] = ).*/g)?.[0]
-
-        text = text.substring(0, text.lastIndexOf("]") + 1)
-        const config = JSON.parse(text)
-        const state =_.find(config, {key: "defaultState"})?.value
-        const offerData = state?.offerData?.offer
-
-        let offer = this.serializeOffer(offerData, document)
-
-        const link = {
-            name: "в ручную",
-            url,
-            responsible,
-            shouldAddToBitrix: true
-        }
-        offer = {
-            ...offer,
-            link: url,
-            parsedFromLink: link
-        }
-
-        const data = await this.addOffers([offer], link)
+        let offer = await this.parseItem(url, responsible)
+        const data = await this.addOffers([offer], offer.parsedFromLink)
 
         return {items: 1, addedItems: data?.length}
     }

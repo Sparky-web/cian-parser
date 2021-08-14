@@ -30,7 +30,7 @@ class Server {
             })
         })
         app.post("/update", async (req, res) => {
-            if(req.body?.model === "links" || !req.body?.model) {
+            if (req.body?.model === "links" || !req.body?.model) {
                 that.logger.info(JSON.stringify(req.body))
                 that.logger.info("restarting because links had been modified")
                 await that.parser.stop()
@@ -52,10 +52,25 @@ class Server {
                 res.send("Error: " + e.message)
             }
         })
+        app.get("/update-one", async (req, res) => {
+            try {
+                const {url, dealId} = req.query
+                const data = await this.parser.updateOneUrl(url, dealId)
+                res.send(data)
+            } catch (e) {
+                res.status(500)
+                res.send("Error: " + e.message)
+            }
+        })
         app.get("/create-one", async (req, res) => {
-            const {url, responsible} = req.query
-            await this.parser.parseOneUrl(url)
-            res.send("ok")
+            try {
+                const {url, responsible} = req.query
+                const data = await this.parser.parseOneUrl(url, responsible)
+                res.send(data)
+            } catch (e) {
+                res.status(500)
+                res.send("Error: " + e.message)
+            }
         })
         app.listen(process.env.SERVER_PORT)
 
