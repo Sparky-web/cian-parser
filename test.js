@@ -35,12 +35,11 @@ class Test {
         this.strapi = new Strapi(this)
         this.config = await this.strapi.get("config")
 
+        this.bx24 = new Bx24(this)
         this.parser = new Parser(this)
         this.server = new Server(this)
-        this.bx24 = new Bx24(this)
 
         await this.server.start()
-
         await this.parser.start("test")
     }
 }

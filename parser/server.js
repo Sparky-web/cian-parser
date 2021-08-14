@@ -49,10 +49,14 @@ class Server {
                 res.send(data)
             } catch (e) {
                 res.status(500)
-                res.send()
+                res.send("Error: " + e.message)
             }
         })
-
+        app.get("/create-one", async (req, res) => {
+            const {url, responsible} = req.query
+            await this.parser.parseOneUrl(url)
+            res.send("ok")
+        })
         app.listen(process.env.SERVER_PORT)
 
         this.app = app

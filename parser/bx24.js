@@ -36,10 +36,10 @@ class Bx24 {
         if (!contactId) contactId = await this.createContact(offer.contacts)
 
         const images = []
-        const chunks = _.chunk(offer.images, 5)
+        const chunks = _.chunk(offer.images.split(","), 5)
 
         for(let chunk of chunks) {
-            await Promise.all(chunk.map(async ({url}) => {
+            await Promise.all(chunk.map(async (url) => {
                 try {
                     const {data: image} = await axios.get(url, {
                         responseType: 'arraybuffer'
@@ -59,7 +59,7 @@ class Bx24 {
         }
 
         const params = {
-            TITLE: `Парсер ${offer.parsedFromLink.name} ${offer.floorNumber}эт. за ${offer.price} ₽`,
+            TITLE: `Парсер ${offer.parsedFromLink?.name || ""} ${offer.floorNumber}эт. за ${offer.price} ₽`,
             'CATEGORY_ID': 9,
             'STAGE_ID': 'C9:14',
             'SOURCE_ID': 79690882901,

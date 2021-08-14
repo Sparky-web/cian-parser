@@ -59,9 +59,7 @@
       "type": "string"
     },
     "images": {
-      "type": "component",
-      "repeatable": true,
-      "component": "offers.image"
+      "type": "text"
     }
   }
 }

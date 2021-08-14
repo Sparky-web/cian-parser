@@ -122,6 +122,30 @@ class Parser {
         return pageCount
     }
 
+    serializeOffer(offer, document) {
+        return ({
+            title: document.querySelector(`a[href="${offer.fullUrl}"]`)?.parentNode?.querySelector(`div[data-name="TitleComponent"]`)?.textContent?.trim()
+                || document.querySelector("h1")?.innerHTML
+            ,
+            description: offer.description,
+            price: offer.bargainTerms?.priceRur || offer.bargainTerms?.price,
+            priceInfo: null,
+            address: offer.geo?.address.map(e => e.name).join(", "),
+            link: offer.fullUrl,
+            uId: offer.cianId,
+            images: offer.photos?.map(photo => photo.fullUrl)?.join(","),
+            jk: offer.geo?.jk?.displayName,
+            jkLink: offer.geo?.jk?.fullUrl,
+            contacts: offer.phones.map(e => ({
+                number: e.countryCode + e.number,
+                name: offer.user?.agencyName || offer.user?.companyName
+            })),
+            floorNumber: offer.floorNumber,
+            area: offer.totalArea,
+            dealType: offer.dealType
+        })
+    }
+
     async parseItems(url, options = {}) {
         let res = await this.axios.get(url, options)
         let html = res.data
@@ -132,25 +156,7 @@ class Parser {
         let initialState = _.find(config, {key: "initialState"})
         let {value: {results: {offers: offers}}} = initialState
 
-        let items = offers.map(offer => ({
-            title: document.querySelector(`a[href="${offer.fullUrl}"]`).parentNode.querySelector(`div[data-name="TitleComponent"]`).textContent.trim(),
-            description: offer.description,
-            price: offer.bargainTerms?.priceRur,
-            priceInfo: null,
-            address: offer.geo?.address.map(e => e.name).join(", "),
-            link: offer.fullUrl,
-            uId: offer.cianId,
-            images: offer.photos?.map(photo => ({url: photo.fullUrl}))?.slice(0, 10),
-            jk: offer.geo?.jk?.displayName,
-            jkLink: offer.geo?.jk?.fullUrl,
-            contacts: offer.phones.map(e => ({
-                number: e.countryCode + e.number,
-                name: offer.user?.agencyName || offer.user?.companyName
-            })),
-            floorNumber: offer.floorNumber,
-            area: offer.totalArea,
-            dealType: offer.dealType
-        }))
+        let items = offers.map(offer => this.serializeOffer(offer, document))
 
         return items
     }
@@ -171,7 +177,6 @@ class Parser {
         for (let offer of newOffers) {
             createdOffers.push(await this.strapi.createOffer(offer))
         }
-
         if(link.shouldAddToBitrix) {
             for (let offer of createdOffers) {
                 try {
@@ -250,11 +255,35 @@ class Parser {
         return parsingInfo
     }
 
-    async parseOneUrl(url) {
-        const {data: html} = await this.axiosRetry.get(url)
+    async parseOneUrl(url, responsible) {
+        const {data: html} = await this.axiosRetry(url)
         const document = this.getDocument(html)
 
+        let text = document.querySelector("body").innerHTML
+            .match(/(?<=_cianConfig\['frontend-offer-card'\] = ).*/g)?.[0]
 
+        text = text.substring(0, text.lastIndexOf("]") + 1)
+        const config = JSON.parse(text)
+        const state =_.find(config, {key: "defaultState"})?.value
+        const offerData = state?.offerData?.offer
+
+        let offer = this.serializeOffer(offerData, document)
+
+        const link = {
+            name: "в ручную",
+            url,
+            responsible,
+            shouldAddToBitrix: true
+        }
+        offer = {
+            ...offer,
+            link: url,
+            parsedFromLink: link
+        }
+
+        const data = await this.addOffers([offer], link)
+
+        return {items: 1, addedItems: data?.length}
     }
 
     async axiosRetry(url, options = {}, retries = 3) {
