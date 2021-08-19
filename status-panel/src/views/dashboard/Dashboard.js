@@ -19,8 +19,8 @@ import axios from "axios";
 
 const WidgetsDropdown = lazy(() => import('../widgets/WidgetsDropdown.js'))
 
-let url = "http://0.0.0.0:1000"
-let apiUrl = "http://0.0.0.0:1001"
+let url = "http://localhost:1000"
+let apiUrl = "http://localhost:1001"
 
 if (!(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')) {
     url = "http://194.67.86.134:1000"
@@ -154,7 +154,7 @@ const Dashboard = () => {
                                 }}/>
                             </td>
                             <td>
-                                <div><a href={e.url} target="_blank">{e.name}</a></div>
+                                <div><a href={`${url}/admin/plugins/content-manager/collectionType/application::links.links/${e.id}`} target="_blank">{e.name}</a></div>
                                 <div className="small text-muted">
                                     Добавлено {formatRelative(new Date(e.created_at), new Date(), {locale: ru})}
                                 </div>
