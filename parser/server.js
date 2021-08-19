@@ -21,6 +21,17 @@ class Server {
         }
     }
 
+    async createOne(req, res) {
+        try {
+            const {url, responsible} = req.query
+            const data = await this.parser.parseOneUrl(url, responsible)
+            res.send(data)
+        } catch (e) {
+            res.status(500)
+            res.send("Error: " + e.message)
+        }
+    }
+
     async start() {
         const app = express()
         const that = this;
@@ -67,16 +78,9 @@ class Server {
         app.get("/update-one", this.updateOne.bind(this))
         app.post("/update-one", this.updateOne.bind(this))
 
-        app.get("/create-one", async (req, res) => {
-            try {
-                const {url, responsible} = req.query
-                const data = await this.parser.parseOneUrl(url, responsible)
-                res.send(data)
-            } catch (e) {
-                res.status(500)
-                res.send("Error: " + e.message)
-            }
-        })
+        app.get("/create-one", this.createOne.bind(this))
+        app.post("/create-one", this.createOne.bind(this))
+
         app.listen(process.env.SERVER_PORT)
 
         this.app = app
