@@ -38,11 +38,14 @@ class Index {
 
         this.bx24 = new Bx24(this)
         this.parser = new Parser(this)
-
         this.server = new Server(this)
 
         await this.server.start()
         await this.parser.start()
+    }
+
+    getThis() {
+        return this
     }
 }
 

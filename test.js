@@ -42,6 +42,10 @@ class Test {
         await this.server.start()
         await this.parser.start("test")
     }
+
+    getThis() {
+        return this
+    }
 }
 
 const index = new Test()

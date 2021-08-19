@@ -312,6 +312,10 @@ class Parser {
             return data
         }
     }
+
+    getThis() {
+        return this
+    }
 }
 
 module.exports = Parser

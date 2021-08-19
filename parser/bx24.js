@@ -5,6 +5,7 @@ class Bx24 {
     constructor(parent) {
         this.logger = parent.logger
         this.strapi = parent.strapi
+        this.parent = parent
     }
 
     objectToQuery(obj, prefix) {
@@ -62,10 +63,12 @@ class Bx24 {
         const images = []
         const chunks = _.chunk(offer.images.split(","), 5)
 
+        const parser = this.parent.getThis().parser
+
         for(let chunk of chunks) {
             await Promise.all(chunk.map(async (url) => {
                 try {
-                    const {data: image} = await axios.get(url, {
+                    const {data: image} = await parser.axios.get(url, {
                         responseType: 'arraybuffer'
                     })
                     const b64 = Buffer.from(image, 'binary').toString('base64')
