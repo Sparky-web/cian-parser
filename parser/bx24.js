@@ -41,7 +41,7 @@ class Bx24 {
             'UF_CRM_1584957840330': offer.description,
             'UF_CRM_1580729853433': offer.address,
             'UF_CRM_1601210192': offer.uId,
-            'TYPE_ID': offer.dealType?.toUpperCase(),
+            'TYPE_ID': offer.dealType === "sale" ? 'SALE' : offer.dealType === "rent" ? "1" : "",
             'UF_CRM_1600027262783': await this.getImages(offer),
             'CONTACT_ID': await this.getContactId(offer)
         }
@@ -122,7 +122,7 @@ class Bx24 {
     async createContact(phones) {
         const {data} = await axios.post("https://persona24.bitrix24.ru/rest/31/zbwkjo3m3rw6d66a/crm.contact.add?" + this.objectToQuery({
             fields: {
-                NAME: phones[0].name,
+                NAME: phones[0].name || "Без имени",
                 PHONE: phones.map(e => ({"VALUE": e.number, "VALUE_TYPE": "WORK"}))
             }
         }))
