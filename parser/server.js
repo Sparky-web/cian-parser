@@ -43,7 +43,7 @@ class Server {
         app.post("/update", async (req, res) => {
             if (req.body?.model === "links" || !req.body?.model) {
                 that.logger.info(JSON.stringify(req.body))
-                that.logger.info("restarting because links had been modified")
+                that.logger.info("restarting because links have been modified")
                 await that.parser.stop()
                 await that.parser.start()
                 that.logger.info("restarted")
@@ -64,8 +64,8 @@ class Server {
             }
         })
 
-        app.get("/update-one", this.updateOne)
-        app.post("/update-one", this.updateOne)
+        app.get("/update-one", this.updateOne.bind(this))
+        app.post("/update-one", this.updateOne.bind(this))
 
         app.get("/create-one", async (req, res) => {
             try {
