@@ -154,7 +154,7 @@ const Dashboard = () => {
                                 }}/>
                             </td>
                             <td>
-                                <div><a href={`${url}/admin/plugins/content-manager/collectionType/application::links.links/${e.id}`} target="_blank">{e.name}</a></div>
+                                <div><a href={`${url}/admin/plugins/content-manager/collectionType/application::links.links/${e.id}`}>{e.name}</a></div>
                                 <div className="small text-muted">
                                     Добавлено {formatRelative(new Date(e.created_at), new Date(), {locale: ru})}
                                 </div>
