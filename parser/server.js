@@ -10,6 +10,17 @@ class Server {
         this.strapi = parent.strapi
     }
 
+    async updateOne(req, res) {
+        try {
+            const {url, dealId} = req.query
+            const data = await this.parser.updateOneUrl(url, dealId)
+            res.send(data)
+        } catch (e) {
+            res.status(500)
+            res.send("Error: " + e.message)
+        }
+    }
+
     async start() {
         const app = express()
         const that = this;
@@ -52,16 +63,10 @@ class Server {
                 res.send("Error: " + e.message)
             }
         })
-        app.get("/update-one", async (req, res) => {
-            try {
-                const {url, dealId} = req.query
-                const data = await this.parser.updateOneUrl(url, dealId)
-                res.send(data)
-            } catch (e) {
-                res.status(500)
-                res.send("Error: " + e.message)
-            }
-        })
+
+        app.get("/update-one", this.updateOne)
+        app.post("/update-one", this.updateOne)
+
         app.get("/create-one", async (req, res) => {
             try {
                 const {url, responsible} = req.query
