@@ -55,6 +55,7 @@ const Dashboard = () => {
     const [offers, setOffers] = useState({})
 
     const [selectedIds, setSelectedIds] = useState([])
+    const [isCreating, setIsCreating] = useState(false)
 
     useEffect(() => {
         fetchInitialData()
@@ -63,7 +64,7 @@ const Dashboard = () => {
     const fetchInitialData = async () => {
         fetchData("links").then(async links => {
             setLinks(links)
-            const newLinks =await Promise.all(links.map(async link => {
+            const newLinks = await Promise.all(links.map(async link => {
                 const inBitrix = await count("offers", {inBitrix: true, parsedFromLink: link.id})
                 const all = await count("offers", {parsedFromLink: link.id})
                 return {
@@ -121,6 +122,16 @@ const Dashboard = () => {
         }))
         await fetchInitialData()
     }
+    const createFailed = async () => {
+        setIsCreating(true)
+        try {
+            await axios.get(apiUrl + "/create-failed/all")
+            await fetchInitialData()
+        } catch (e) {
+            alert(e.message)
+        }
+        setIsCreating(false)
+    }
 
     return (
         <>
@@ -154,7 +165,9 @@ const Dashboard = () => {
                                 }}/>
                             </td>
                             <td>
-                                <div><a target="_top" href={`${url}/admin/plugins/content-manager/collectionType/application::links.links/${e.id}`}>{e.name}</a></div>
+                                <div><a target="_top"
+                                        href={`${url}/admin/plugins/content-manager/collectionType/application::links.links/${e.id}`}>{e.name}</a>
+                                </div>
                                 <div className="small text-muted">
                                     Добавлено {formatRelative(new Date(e.created_at), new Date(), {locale: ru})}
                                 </div>
@@ -183,6 +196,14 @@ const Dashboard = () => {
                         </tr>)}
                         </tbody>
                     </table>
+
+                    <br />
+
+                    <h6 className={"text-dark"}>Добавить в битрикс сделки, которые не удалось добавить ранее</h6>
+                    {isCreating ?
+                        <CButton disabled color="warning"><CSpinner color={"light"}/></CButton> :
+                        <CButton color={"primary"} onClick={createFailed}>Добавить</CButton>
+                    }
 
                     {selectedIds.length ? <div className="mt-1">
                         <div>Выбрано ссылок: {selectedIds.length}</div>
