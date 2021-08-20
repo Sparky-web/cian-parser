@@ -2,12 +2,14 @@ const express = require("express")
 const fs = require("fs/promises")
 const path = require("path")
 const cors = require("cors")
+const methodOverride = require('method-override')
 
 class Server {
     constructor(parent) {
         this.parser = parent.parser
         this.logger = parent.logger
         this.strapi = parent.strapi
+        this.bx24 = parent.bx24
     }
 
     async updateOne(req, res) {
@@ -36,6 +38,7 @@ class Server {
         const app = express()
         const that = this;
 
+
         app.use(express.json())
         app.use(cors())
         app.use(express.static(path.join(__dirname, "../status-panel/build")))
@@ -51,6 +54,7 @@ class Server {
                 res.send(result.file.map(e => `${e.level} ${e.timestamp} || ${e.message}`).join("<br />"))
             })
         })
+
         app.post("/update", async (req, res) => {
             if (req.body?.model === "links" || !req.body?.model) {
                 that.logger.info(JSON.stringify(req.body))
@@ -82,9 +86,29 @@ class Server {
         app.post("/create-one", this.createOne.bind(this))
 
         app.get("/create-failed/:linkId", async (req, res) => {
-            await this.strapi.getOffers({
-                parsedFromLink: req.params.linkId
-            })
+            try {
+                const {linkId} = req.params
+
+                const offers = linkId === "all" ?
+                    await this.strapi.getOffers({inBitrix: false}) :
+                    await this.strapi.getOffers({parsedFromLink: linkId, inBitrix: false})
+
+                const created = []
+
+                for (let offer of offers) {
+                    try {
+                        await this.bx24.createEntry(offer)
+                        created.push(offer)
+                    } catch (e) {
+                        this.logger.error(e)
+                    }
+                }
+
+                res.send({addedItems: created.length})
+            } catch (e) {
+                res.status(500)
+                res.send(e.stack)
+            }
         })
 
         app.listen(process.env.SERVER_PORT)
