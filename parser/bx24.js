@@ -61,7 +61,7 @@ class Bx24 {
 
     async getImages(offer) {
         const images = []
-        const chunks = _.chunk(offer.images.split(","), 5)
+        const chunks = _.chunk(offer.images?.split(","), 5)
 
         const parser = this.parent.getThis().parser
 
