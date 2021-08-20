@@ -81,7 +81,7 @@ class Parser {
                 cron.schedule(cronConfig[link.frequency], async () => {
                     await this.parseUrl(link)
                         .catch(err => {
-                            this.logger.error(`Parsing error. Link: ${link.name}. Error: ${err.message}`)
+                            this.logger.error(`Parsing error. Link: ${link.name}. Error: ${err.stack}`)
                         })
                 })
             )
@@ -211,7 +211,7 @@ class Parser {
                 try {
                     await this.bx24.createEntry(offer)
                 } catch (e) {
-                    this.logger.error("Couldn't create deal for offer id: " + offer.id + ", Reason: " + e.message)
+                    this.logger.error("Couldn't create deal for offer id: " + offer.id + ", Reason: " + e.stack)
                 }
             }
         }
@@ -307,7 +307,7 @@ class Parser {
             )
             return data
         } catch (e) {
-            this.logger.error(e.message + ". Retrying.")
+            this.logger.error(e.stack + ". Retrying.")
             const data = await this.axiosRetry(url, options, (retries - 1))
             return data
         }

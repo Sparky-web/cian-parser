@@ -81,6 +81,12 @@ class Server {
         app.get("/create-one", this.createOne.bind(this))
         app.post("/create-one", this.createOne.bind(this))
 
+        app.get("/create-failed/:linkId", async (req, res) => {
+            await this.strapi.getOffers({
+                parsedFromLink: req.params.linkId
+            })
+        })
+
         app.listen(process.env.SERVER_PORT)
 
         this.app = app

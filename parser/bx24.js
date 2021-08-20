@@ -30,7 +30,7 @@ class Bx24 {
     async getFields(offer) {
         return {
             TITLE: `Парсер ${offer.parsedFromLink?.name || ""} ${offer.floorNumber}эт. за ${offer.price} ₽`,
-                'CATEGORY_ID': 9,
+            'CATEGORY_ID': 9,
             'STAGE_ID': 'C9:14',
             'SOURCE_ID': 79690882901,
             'UF_CRM_1580558162': [offer.link],
@@ -65,7 +65,7 @@ class Bx24 {
 
         const parser = this.parent.getThis().parser
 
-        for(let chunk of chunks) {
+        for (let chunk of chunks) {
             await Promise.all(chunk.map(async (url) => {
                 try {
                     const {data: image} = await parser.axios.get(url, {
@@ -80,7 +80,7 @@ class Bx24 {
                         ]
                     })
                 } catch (e) {
-                    this.logger.error("Failed to fetch image: " + url + " Reason: " + e.message)
+                    this.logger.error("Failed to fetch image: " + url + " Reason: " + e.stack)
                 }
             }))
         }
@@ -88,17 +88,23 @@ class Bx24 {
         return images
     }
 
-    async createEntry(offer) {
-        const params = await this.getFields(offer)
-        const {data} = await axios.post("https://persona24.bitrix24.ru/rest/31/zbwkjo3m3rw6d66a/crm.deal.add",
-            this.objectToQuery({fields: params}))
+    async createEntry(offer, retries = 3) {
+        try {
+            const params = await this.getFields(offer)
+            const {data} = await axios.post("https://persona24.bitrix24.ru/rest/31/zbwkjo3m3rw6d66a/crm.deal.add",
+                this.objectToQuery({fields: params}))
 
-        this.logger.info(`Created deal with id: ${data.result}. Cian offer: ${offer.link}`)
-        await this.strapi.update("offers", {
-            ...offer,
-            inBitrix: true
-        })
-        return data
+            this.logger.info(`Created deal with id: ${data.result}. Cian offer: ${offer.link}`)
+            await this.strapi.update("offers", {
+                ...offer,
+                inBitrix: true
+            })
+            return data
+        } catch (e) {
+            if(retries < 1) throw new Error(`Couldn't create deal with id: ${offer.id}, retries count exeeded. ${e.stack}`)
+            this.logger.error("Couldn't create deal, retrying. " + (e.stack || e.message))
+            return this.createEntry(offer, retries - 1).bind(this)
+        }
     }
 
     async updateEntry(offer, dealId) {
@@ -111,8 +117,6 @@ class Bx24 {
         this.logger.info(`Updated deal with id: ${dealId}. Cian offer: ${offer.link}`)
         return data
     }
-
-    async checkEntry() {}
 
     async findContact(phone) {
         const {data} = await axios.get(`https://persona24.bitrix24.ru/rest/31/zbwkjo3m3rw6d66a/crm.duplicate.findbycomm?type=PHONE&values[0]=${phone}&entity_type=CONTACT`)
