@@ -44,10 +44,10 @@ class Parser {
         }
 
         async function errorHandler(error) {
-            if (!error.config.httpsAgent) throw error
+            if (!error.config?.httpsAgent) throw error
 
-            const ip = error.config.httpsAgent.proxy.host
-            const port = error.config.httpsAgent.proxy.port
+            const ip = error.config?.httpsAgent?.proxy?.host
+            const port = error.config?.httpsAgent?.proxy?.port
 
             await this.addUnsuccessfulCountToProxy(`${ip}:${port}`)
 
@@ -147,7 +147,7 @@ class Parser {
     }
 
     async parseItems(url, options = {}) {
-        let res = await this.axios.get(url, options)
+        let res = await this.axiosRetry(url, options)
         let html = res.data
         const document = this.getDocument(html)
 
