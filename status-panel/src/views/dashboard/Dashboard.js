@@ -199,11 +199,13 @@ const Dashboard = () => {
 
                     <br />
 
-                    <h6 className={"text-dark"}>Добавить в битрикс сделки, которые не удалось добавить ранее</h6>
-                    {isCreating ?
-                        <CButton disabled color="warning"><CSpinner color={"light"}/></CButton> :
-                        <CButton color={"primary"} onClick={createFailed}>Добавить</CButton>
-                    }
+                    <div className="d-flex flex-column align-items-end">
+                        <h6 className={"text-dark"}>Создать недостающие лиды в б24</h6>
+                        {isCreating ?
+                            <CButton disabled color="warning"><CSpinner color={"light"}/></CButton> :
+                            <CButton color={"warning"} className="" onClick={createFailed}>Coздать</CButton>
+                        }
+                    </div>
 
                     {selectedIds.length ? <div className="mt-1">
                         <div>Выбрано ссылок: {selectedIds.length}</div>
