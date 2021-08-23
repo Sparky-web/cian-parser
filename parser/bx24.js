@@ -103,7 +103,8 @@ class Bx24 {
         } catch (e) {
             if(retries < 1) throw new Error(`Couldn't create deal with id: ${offer.id}, retries count exeeded. ${e.stack}`)
             this.logger.error("Couldn't create deal, retrying. " + (e.stack || e.message))
-            return this.createEntry(offer, retries - 1).bind(this)
+            const bound = this.createEntry.bind(this)
+            return bound(offer, retries - 1)
         }
     }
 
