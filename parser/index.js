@@ -7,6 +7,10 @@ const cron = require('node-cron');
 const httpsProxyAgent = require('https-proxy-agent');
 const cronConfig = require("./cron-config")
 
+function randomNum(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min; // You can remove the Math.floor if you don't want it to be an integer
+}
+
 class Parser {
     proxyList = []
     urls = []
@@ -72,17 +76,23 @@ class Parser {
         this.jobs = []
         const links = await this.strapi.get("links", {isEnabled: true})
 
-        if(mode === "test") return;
+        if (mode === "test") return;
 
         this.logger.info("Links loaded, names: " + links.map(e => e.name).join(", "))
 
         for (let link of links) {
             this.jobs.push(
                 cron.schedule(cronConfig[link.frequency], async () => {
-                    await this.parseUrl(link)
-                        .catch(err => {
-                            this.logger.error(`Parsing error. Link: ${link.name}. Error: ${err.stack}`)
+                    try {
+                        await this.parseUrl(link)
+                    } catch (e) {
+                        const retryInMs = 1000 * randomNum(100, 500)
+                        this.logger.error(`Parsing error. Link: ${link.name}. Error: ${e.stack}. Retrying in: ${retryInMs}ms`)
+                        await new Promise(r=>setTimeout(r, retryInMs))
+                        await this.parseUrl(link).catch(e => {
+                            this.logger.error(`Parsing error. Link: ${link.name}. Error: ${e.stack}.`)
                         })
+                    }
                 })
             )
         }
@@ -170,7 +180,7 @@ class Parser {
 
         text = text.substring(0, text.lastIndexOf("]") + 1)
         const config = JSON.parse(text)
-        const state =_.find(config, {key: "defaultState"})?.value
+        const state = _.find(config, {key: "defaultState"})?.value
         const offerData = state?.offerData?.offer
 
         let offer = this.serializeOffer(offerData, document)
@@ -206,7 +216,7 @@ class Parser {
         for (let offer of newOffers) {
             createdOffers.push(await this.strapi.createOffer(offer))
         }
-        if(link.shouldAddToBitrix) {
+        if (link.shouldAddToBitrix) {
             for (let offer of createdOffers) {
                 try {
                     await this.bx24.createEntry(offer)
