@@ -220,6 +220,7 @@ class Parser {
             for (let offer of createdOffers) {
                 try {
                     await this.bx24.createEntry(offer)
+                    await new Promise(r=>setTimeout(r, 500))
                 } catch (e) {
                     this.logger.error("Couldn't create deal for offer id: " + offer.id + ", Reason: " + e.stack)
                 }
