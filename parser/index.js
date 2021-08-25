@@ -126,7 +126,9 @@ class Parser {
         let {data: html} = await (this.axiosRetry.bind(this))(url)
         const document = this.getDocument(html)
         const itemsCount = +document.querySelector('*[data-name="SummaryHeader"]')
-            .textContent.trim().match(/\d{1,5}/ig)[0]
+            ?.textContent?.trim()?.match(/\d{1,5}/ig)?.[0]
+
+        if(!itemsCount) return 1;
 
         const pageCount = Math.ceil(itemsCount / 28)
         return pageCount
@@ -253,7 +255,7 @@ class Parser {
             pages = pages.slice(0, Math.ceil(pageCount * 0.1))
         }
 
-        const chunks = _.chunk(pages, 3)
+        const chunks = _.chunk(pages, 2)
 
         const items = [];
         const addedItems = [];
