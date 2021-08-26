@@ -37,6 +37,8 @@ class Parser {
         async function reqMiddleware(config) {
             const proxy = this.proxies[_.random(0, this.proxies.length - 1)]
 
+            this.logger.info("using proxy " + proxy.proxy)
+
             if (config.url.match(/cian/ig) && proxy) {
                 const agent = new httpsProxyAgent(proxy.proxy)
                 config.proxy = false
@@ -159,7 +161,7 @@ class Parser {
     }
 
     async parseItems(url, options = {}) {
-        let res = await this.axiosRetry(url, options)
+        let res = await (this.axiosRetry.bind(this))(url, options)
         let html = res.data
         const document = this.getDocument(html)
 
