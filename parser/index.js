@@ -37,8 +37,6 @@ class Parser {
         async function reqMiddleware(config) {
             const proxy = this.proxies[_.random(0, this.proxies.length - 1)]
 
-            this.logger.info("using proxy " + proxy.proxy)
-
             if (config.url.match(/cian/ig) && proxy) {
                 const agent = new httpsProxyAgent(proxy.proxy)
                 config.proxy = false
@@ -63,8 +61,10 @@ class Parser {
         async function resMiddleware(c) {
             const document = that.getDocument(c.data)
             if (document.querySelector("#captcha")) {
+
                 const ip = c.config.httpsAgent.proxy.host
                 const port = c.config.httpsAgent.proxy.port
+
                 await this.addUnsuccessfulCountToProxy(`${ip}:${port}`)
                 throw new Error("Captcha, can not proceed")
             }
@@ -88,20 +88,20 @@ class Parser {
                     try {
                         await this.parseUrl(link)
                     } catch (e) {
-                        const retryInMs = 1000 * randomNum(100, 500)
-                        this.logger.error(`Parsing error. Link: ${link.name}. Error: ${e.stack}. Retrying in: ${retryInMs}ms`)
+                        const retryInMs = 1000 * randomNum(100, 1500)
+                        this.logger.error(`Parsing error. Link: ${link.name}. Error: ${e.stack}. Retrying in: ${retryInMs / 1000} seconds`)
                         await new Promise(r=>setTimeout(r, retryInMs))
                         await this.parseUrl(link).catch(e => {
                             this.logger.error(`Parsing error. Link: ${link.name}. Error: ${e.stack}.`)
                         })
                     }
-                })
+                }, {})
             )
         }
     }
 
     async addUnsuccessfulCountToProxy(proxyString) {
-        let proxy = await this.strapi.getProxies({
+        let proxy = await this.strapi.get("proxies", {
             proxy_contains: proxyString
         })
         proxy = proxy[0]
