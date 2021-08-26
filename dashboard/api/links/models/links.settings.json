@@ -13,7 +13,8 @@
   "pluginOptions": {},
   "attributes": {
     "url": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "mode": {
       "type": "enumeration",
@@ -21,21 +22,25 @@
         "parse_all",
         "parse_first_pages"
       ],
-      "default": "parse_first_pages"
+      "default": "parse_first_pages",
+      "required": true
     },
     "responsible": {
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "isFirstParse": {
       "type": "boolean",
       "default": true
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "isEnabled": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "required": true
     },
     "lastParse": {
       "type": "component",
