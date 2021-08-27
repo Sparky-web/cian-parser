@@ -112,6 +112,7 @@ class Bx24 {
     async updateEntry(offer, dealId) {
         const params = await this.getFields(offer)
         delete params.ASSIGNED_BY_ID
+        delete params.STAGE_ID
 
         const {data} = await axios.post("https://persona24.bitrix24.ru/rest/31/zbwkjo3m3rw6d66a/crm.deal.update",
             this.objectToQuery({fields: params, id: dealId}))

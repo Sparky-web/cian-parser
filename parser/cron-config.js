@@ -6,7 +6,15 @@ module.exports = {
     every_30_minutes: "*/30 * * * *",
     every_60_minutes: "0 * * * *",
     every_2_hours: "0 */2 * * *",
+    every_3_hours: "0 */3 * * *",
     every_4_hours: "0 */4 * * *",
+    every_5_hours: "0 */5 * * *",
+    every_6_hours: "0 */6 * * *",
+    every_7_hours: "0 */7 * * *",
+    every_8_hours: "0 */8 * * *",
+    every_9_hours: "0 */9 * * *",
+    every_10_hours: "0 */10 * * *",
+    every_11_hours: "0 */11 * * *",
     every_12_hours: "0 */12 * * *",
     every_day: "0 0 * * *"
 }
