@@ -152,7 +152,7 @@ class Parser {
             jkLink: offer.geo?.jk?.fullUrl,
             contacts: offer.phones.map(e => ({
                 number: e.countryCode + e.number,
-                name: offer.user?.agencyName || offer.user?.companyName
+                name: offer.user?.agencyName || offer.user?.companyName || `ID ${offer.user?.cianUserId}`
             })),
             floorNumber: offer.floorNumber,
             area: offer.totalArea,
