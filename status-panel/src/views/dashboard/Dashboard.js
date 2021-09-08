@@ -113,6 +113,9 @@ const Dashboard = () => {
         if (selectedIds.includes(id)) setSelectedIds(selectedIds.filter(e => e !== id))
         else setSelectedIds([...selectedIds, id])
     }
+    const selectAll = () => {
+        links.forEach(link => select(link.id))
+    }
 
     const turnLinks = async (direction) => {
         await Promise.all(selectedIds.map(async (selectedId) => {
@@ -147,7 +150,9 @@ const Dashboard = () => {
                     <table className="table table-hover table-outline mb-0 d-sm-table">
                         <thead className="thead-light">
                         <tr>
-                            <th>#</th>
+                            <th>
+                                <input type="checkbox" checked={selectedIds.length === links.length} onChange={() => {selectAll()}}/>
+                            </th>
                             <th>Ссылка</th>
                             <th className="text-center">Статус</th>
                             <th>Последний парсинг</th>
@@ -160,7 +165,7 @@ const Dashboard = () => {
                         {links.map(e => <tr key={e.id}
                                             className={selectedIds.includes(e.id) ? "bg-light text-dark" : ""}>
                             <td>
-                                <input type="checkbox" onChange={() => {
+                                <input type="checkbox" checked={selectedIds.includes(e.id)} onChange={() => {
                                     select(e.id)
                                 }}/>
                             </td>
