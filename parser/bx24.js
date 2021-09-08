@@ -45,7 +45,7 @@ class Bx24 {
             'TYPE_ID': offer.dealType === "sale" ? 'SALE' : offer.dealType === "rent" ? "1" : "",
             'UF_CRM_1600027262783': await this.getImages(offer),
             'CONTACT_ID': await this.getContactId(offer),
-            'UF_CRM_1597229563828': offer.contacts.map(p => `${p.name || "Без имени"} ${p.number}`).join(", ")
+            'UF_CRM_1597229563828': (offer.contacts[0].name || "Без имени") + ": " + offer.contacts.map(p => `${p.number}`).join(", ")
         }
     }
 
@@ -105,6 +105,7 @@ class Bx24 {
         } catch (e) {
             if(retries < 1) throw new Error(`Couldn't create deal with id: ${offer.id}, retries count exeeded. ${e.stack}`)
             this.logger.error("Couldn't create deal, retrying. " + (e.stack || e.message))
+            await new Promise(r => setTimeout(r, 500))
             const bound = this.createEntry.bind(this)
             return bound(offer, retries - 1)
         }

@@ -114,7 +114,9 @@ const Dashboard = () => {
         else setSelectedIds([...selectedIds, id])
     }
     const selectAll = () => {
-        links.forEach(link => select(link.id))
+        if(selectedIds.length)
+            setSelectedIds([])
+        else setSelectedIds(links.map(e=>e.id))
     }
 
     const turnLinks = async (direction) => {
