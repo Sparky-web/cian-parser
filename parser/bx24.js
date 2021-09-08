@@ -3,6 +3,7 @@ const _ = require("lodash")
 
 class Bx24 {
     constructor(parent) {
+        this.config = parent.config
         this.logger = parent.logger
         this.strapi = parent.strapi
         this.parent = parent
@@ -92,7 +93,7 @@ class Bx24 {
     async createEntry(offer, retries = 3) {
         try {
             const params = await this.getFields(offer)
-            const {data} = await axios.post("https://persona24.bitrix24.ru/rest/31/zbwkjo3m3rw6d66a/crm.deal.add",
+            const {data} = await axios.post(this.config.bitrixWebhookUrl + "/crm.deal.add",
                 this.objectToQuery({fields: params}))
 
             this.logger.info(`Created deal with id: ${data.result}. Cian offer: ${offer.link}`)
@@ -114,7 +115,7 @@ class Bx24 {
         delete params.ASSIGNED_BY_ID
         delete params.STAGE_ID
 
-        const {data} = await axios.post("https://persona24.bitrix24.ru/rest/31/zbwkjo3m3rw6d66a/crm.deal.update",
+        const {data} = await axios.post(this.config.bitrixWebhookUrl + "/crm.deal.update",
             this.objectToQuery({fields: params, id: dealId}))
 
         this.logger.info(`Updated deal with id: ${dealId}. Cian offer: ${offer.link}`)
@@ -122,17 +123,17 @@ class Bx24 {
     }
 
     async findContact(phone) {
-        const {data} = await axios.get(`https://persona24.bitrix24.ru/rest/31/zbwkjo3m3rw6d66a/crm.duplicate.findbycomm?type=PHONE&values[0]=${phone}&entity_type=CONTACT`)
+        const {data} = await axios.get(`${this.config.bitrixWebhookUrl}/crm.duplicate.findbycomm?type=PHONE&values[0]=${phone}&entity_type=CONTACT`)
         return data.result?.CONTACT?.[0]
     }
 
     async createContact(phones, offer) {
-        const {data} = await axios.post("https://persona24.bitrix24.ru/rest/31/zbwkjo3m3rw6d66a/crm.contact.add?" + this.objectToQuery({
+        const {data} = await axios.post(`${this.config.bitrixWebhookUrl}/crm.contact.add?${this.objectToQuery({
             fields: {
                 NAME: phones[0].name || "Без имени",
                 PHONE: phones.map(e => ({"VALUE": e.number, "VALUE_TYPE": "WORK"}))
             }
-        }))
+        })}`)
 
         return data.result
     }
