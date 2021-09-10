@@ -43,6 +43,11 @@ const count = async (type, filters) => {
 
     return data
 }
+let serializeProxy = proxy => {
+    const withoutProtocol = proxy.split("//")?.[1]
+    const splat = withoutProtocol.split("@")
+    return `${splat?.[1]}:${splat?.[0]}`
+}
 
 const Dashboard = () => {
     const [links, setLinks] = useState([])
@@ -56,6 +61,8 @@ const Dashboard = () => {
 
     const [selectedIds, setSelectedIds] = useState([])
     const [isCreating, setIsCreating] = useState(false)
+
+    const [selectedProxies, setSelectedProxies] = useState([])
 
     useEffect(() => {
         fetchInitialData()
@@ -93,10 +100,10 @@ const Dashboard = () => {
         try {
             let arr = proxyString.split("\n")
             arr = arr.filter(e => e)
-            arr = arr.map(el => {
-                const segments = el.split(":")
-                return `http://${segments[2]}:${segments[3]}@${segments[0]}:${segments[1]}`
-            })
+            // arr = arr.map(el => {
+            //     const segments = el.split(":")
+            //     return `http://${segments[2]}:${segments[3]}@${segments[0]}:${segments[1]}`
+            // })
 
             for (let proxy of arr) {
                 await axios.post(url + "/proxies", {proxy})
@@ -119,6 +126,16 @@ const Dashboard = () => {
         else setSelectedIds(links.map(e=>e.id))
     }
 
+    const selectProxy = (id) => {
+        if (selectedProxies.includes(id)) setSelectedProxies(selectedProxies.filter(e => e !== id))
+        else setSelectedProxies([...selectedProxies, id])
+    }
+    const selectAllProxies = () => {
+        if(selectedProxies.length)
+            setSelectedProxies([])
+        else setSelectedProxies(proxies.map(e=>e.id))
+    }
+
     const turnLinks = async (direction) => {
         await Promise.all(selectedIds.map(async (selectedId) => {
             await axios.put(`${url}/links/${selectedId}`, {
@@ -136,6 +153,16 @@ const Dashboard = () => {
             alert(e.message)
         }
         setIsCreating(false)
+    }
+
+    const resetAttempts = async () => {
+        await Promise.all(selectedProxies.map(async proxy => {
+            await axios.put(`${url}/proxies/${proxy}`, {
+                unsuccesfulAttempts: 0,
+                enabled: true
+            })
+        }))
+        await fetchInitialData()
     }
 
     return (
@@ -191,7 +218,7 @@ const Dashboard = () => {
                                 </>}
                             </td>
                             <td className="text-center">
-                                {e.count?.all} / {e.count?.inBitrix}
+                                {e.count?.all} / <a href="https://persona24.bitrix24.ru/crm/deal/category/9/" target={"_blank"}>{e.count?.inBitrix}</a>
                             </td>
                             <td className="text-right">
                                 {runningIds.includes(e.id) ?
@@ -229,6 +256,9 @@ const Dashboard = () => {
                     <table className="table table-hover table-outline mb-0 d-sm-table">
                         <thead className="thead-light">
                         <tr>
+                            <th>
+                                <input type="checkbox" checked={selectedProxies.length === proxies.length} onChange={() => {selectAllProxies()}}/>
+                            </th>
                             <th>Прокси</th>
                             <th className="text-center">Статус</th>
                             <th className="text-right">Неуд. попытки</th>
@@ -237,8 +267,11 @@ const Dashboard = () => {
                         <tbody>
 
                         {proxies.map(e => <tr key={e.id}>
+                            <td><input type="checkbox" checked={selectedProxies.includes(e.id)} onChange={() => {selectProxy(e.id)}}/></td>
                             <td>
-                                <div>{e.proxy}</div>
+                                <div><a href={`${url}/admin/plugins/content-manager/collectionType/application::proxies.proxies/${e.id}`} target={"_top"}>
+                                    {e.proxy}
+                                </a></div>
                                 <div className="small text-muted">
                                     Добавлено {formatRelative(new Date(e.created_at), new Date(), {locale: ru})}
                                 </div>
@@ -250,11 +283,19 @@ const Dashboard = () => {
                             <td className="text-right">{e.unsuccesfulAttempts}</td>
                         </tr>)}
                         </tbody>
+
                     </table>
+
+                    {selectedProxies.length ? <div className="mt-1">
+                        <div>Выбрано прокси: {selectedProxies.length}</div>
+                        <CButton color="danger" onClick={() => {
+                            resetAttempts()
+                        }}>Сбросить неудачные попытки</CButton>
+                    </div> : <div/>}
                     <br/>
                     <div>
                         <h3>Пакетное добавление прокси</h3>
-                        <CLabel>Http прокси (каждая с новой строки) в формате ip:port:username:password</CLabel>
+                        <CLabel>Http прокси (каждая с новой строки) в формате http://username:password@ip:port</CLabel>
                         <CTextarea
                             onChange={e => setProxyString(e.target.value)}
                             value={proxyString}
@@ -267,11 +308,11 @@ const Dashboard = () => {
                         }
                     </div>
 
-                    <CToast autohide={false} className="align-items-center">
-                        <div className="d-flex">
-                            <CToastBody>Hello, world! This is a toast message.</CToastBody>
-                        </div>
-                    </CToast>
+                    <div className={"mt-3"}>
+                        <a href={`${apiUrl}/logs/combined`} target={"_blank"} className={"mt-3"}>
+                            Посмотреть логи
+                        </a>
+                    </div>
                 </CCardBody>
             </CCard>
         </>
