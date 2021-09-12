@@ -14,6 +14,8 @@ function randomNum(min, max) {
 class Parser {
     proxyList = []
     urls = []
+    stack = []
+    running = false
 
     constructor(parent) {
         this.config = parent.config
@@ -62,10 +64,12 @@ class Parser {
             const document = that.getDocument(c.data)
             if (document.querySelector("#captcha")) {
 
-                const ip = c.config.httpsAgent.proxy.host
-                const port = c.config.httpsAgent.proxy.port
+                const ip = c.config.httpsAgent?.proxy?.host
+                const port = c.config.httpsAgent?.proxy?.port
 
-                await this.addUnsuccessfulCountToProxy(`${ip}:${port}`)
+                if (ip && port) {
+                    await this.addUnsuccessfulCountToProxy(`${ip}:${port}`)
+                }
                 throw new Error("Captcha, can not proceed")
             }
 
@@ -85,18 +89,28 @@ class Parser {
         for (let link of links) {
             this.jobs.push(
                 cron.schedule(cronConfig[link.frequency], async () => {
-                    try {
-                        await this.parseUrl(link)
-                    } catch (e) {
-                        const retryInMs = 1000 * randomNum(100, 1500)
-                        this.logger.error(`Parsing error. Link: ${link.name}. Error: ${e.stack}. Retrying in: ${retryInMs / 1000} seconds`)
-                        await new Promise(r=>setTimeout(r, retryInMs))
-                        await this.parseUrl(link).catch(e => {
+                    this.stack.push(async () => {
+                        await this.parseUrl.bind(this)(link).catch(e => {
                             this.logger.error(`Parsing error. Link: ${link.name}. Error: ${e.stack}.`)
+                            // const retryInMs = 1000 * randomNum(100, 1500)
+                            // this.logger.error(`Parsing error. Link: ${link.name}. Error: ${e.stack}. Retrying in: ${retryInMs / 1000} seconds`)
+                            // await new Promise(r=>setTimeout(r, retryInMs))
+                            // await this.parseUrl(link).catch(e => {
+                            //     this.logger.error(`Parsing error. Link: ${link.name}. Error: ${e.stack}.`)
+                            // })
+                            //
                         })
-                    }
+                    })
                 }, {})
             )
+        }
+
+        this.running = true
+        while (this.running) {
+            await new Promise(r => setTimeout(r, 100))
+            while (this.stack.length > 0) {
+                await ((this.stack.shift()).bind(this))()
+            }
         }
     }
 
@@ -116,6 +130,9 @@ class Parser {
     }
 
     async stop() {
+        this.running = false
+        this.stack = []
+
         this.jobs.forEach(job => job.stop())
     }
 
@@ -130,7 +147,7 @@ class Parser {
         const itemsCount = +document.querySelector('*[data-name="SummaryHeader"]')
             ?.textContent?.trim()?.match(/\d{1,5}/ig)?.[0]
 
-        if(!itemsCount) return 1;
+        if (!itemsCount) return 1;
 
         const pageCount = Math.ceil(itemsCount / 28)
         return pageCount
@@ -224,7 +241,7 @@ class Parser {
             for (let offer of createdOffers) {
                 try {
                     await this.bx24.createEntry(offer)
-                    await new Promise(r=>setTimeout(r, 500))
+                    await new Promise(r => setTimeout(r, 500))
                 } catch (e) {
                     this.logger.error("Couldn't create deal for offer id: " + offer.id + ", Reason: " + e.stack)
                 }
