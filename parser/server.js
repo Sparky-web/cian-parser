@@ -52,7 +52,7 @@ class Server {
                 limit: 500,
                 order: 'desc',
             }, (err, result) => {
-                res.send(result.file.map(e => `${e.level} ${e.timestamp} || ${e.message}`).join("<br />"))
+                res.send(result.file.map(e => `${new Date(e.timestamp).toLocaleString('ru-RU', {timeZone: "Europe/Moscow"})} ${e.level} || ${e.message}`).join("<br />"))
             })
         })
 
