@@ -3,3 +3,4 @@ node_modules
 /parser/logs/common.log
 /parser/logs/error.log
 /parser/logs/warn.log
+.tmp
