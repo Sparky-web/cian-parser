@@ -6,6 +6,7 @@ const _ = require("lodash")
 const cron = require('node-cron');
 const httpsProxyAgent = require('https-proxy-agent');
 const cronConfig = require("./cron-config")
+const filesystem = require("../modules/filesystem");
 
 function randomNum(min, max) {
     return Math.floor(Math.random() * (max - min)) + min; // You can remove the Math.floor if you don't want it to be an integer
@@ -63,14 +64,16 @@ class Parser {
         async function resMiddleware(c) {
             const document = that.getDocument(c.data)
             if (document.querySelector("#captcha")) {
-
                 const ip = c.config.httpsAgent?.proxy?.host
                 const port = c.config.httpsAgent?.proxy?.port
 
                 if (ip && port) {
                     await this.addUnsuccessfulCountToProxy(`${ip}:${port}`)
                 }
-                throw new Error("Captcha, can not proceed")
+                throw ({
+                    message: "Captcha, cannot proceed",
+                    response: c
+                })
             }
 
             return c
@@ -339,7 +342,11 @@ class Parser {
             )
             return data
         } catch (e) {
-            this.logger.error(e.stack + ". Retrying.")
+            const time = Date.now()
+            await filesystem.createFileIfNotExists(`.tmp/error-pages/${time}.html`, e.response?.data)
+            await filesystem.writeToFile(`.tmp/error-pages/${time}.html`, e.response?.data)
+
+            this.logger.error(`${e.message}. Response contents at <a href="/error-pages/${time}.html">/error-pages/${time}.html</a>. Retrying.`)
             const data = await this.axiosRetry(url, options, (retries - 1))
             return data
         }

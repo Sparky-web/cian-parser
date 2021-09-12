@@ -3,6 +3,7 @@ const fs = require("fs/promises")
 const path = require("path")
 const cors = require("cors")
 const methodOverride = require('method-override')
+const filesystem = require("../modules/filesystem");
 
 class Server {
     constructor(parent) {
@@ -53,6 +54,14 @@ class Server {
             }, (err, result) => {
                 res.send(result.file.map(e => `${e.level} ${e.timestamp} || ${e.message}`).join("<br />"))
             })
+        })
+
+        app.get("/error-pages/:filename", async (req, res) => {
+            try {
+                res.send(await filesystem.getFileContents(`.tmp/error-pages/${req.params.filename}`))
+            } catch (e) {
+                res.status(404).send("not found")
+            }
         })
 
         app.post("/update", async (req, res) => {
