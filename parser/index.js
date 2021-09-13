@@ -299,10 +299,9 @@ class Parser {
             }))
         }
 
-        if (link.isFirstParse) await this.strapi.update("links", {
-            ...link,
-            isFirstParse: false
-        })
+        if (link.isFirstParse) link = {
+            ...link, isFirstParse: false
+        }
 
         this.logger.info(`Parsing ended for link: ${link.name}. Items parsed total: ${items.length}, added items: ${addedItems.length}`)
 
