@@ -290,6 +290,9 @@ class Parser {
                         p: page
                     }
                 })
+
+                this.logger.info(`Got items on link ${link.name}, page index: ${page}: ${data.length}`)
+
                 items.push(...data)
                 const newItems = await this.addOffers(data, link)
                 addedItems.push(...newItems)
