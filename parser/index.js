@@ -345,8 +345,8 @@ class Parser {
             return data
         } catch (e) {
             const time = Date.now()
-            await filesystem.createFileIfNotExists(`.tmp/error-pages/${time}.html`, e.response?.data)
-            await filesystem.writeToFile(`.tmp/error-pages/${time}.html`, e.response?.data)
+            await filesystem.createFileIfNotExists(`.tmp/error-pages/${time}.html`, e.response?.data || "")
+            await filesystem.writeToFile(`.tmp/error-pages/${time}.html`, e.response?.data || "")
 
             this.logger.error(`${e.message}. Response contents at <a href="/error-pages/${time}.html">/error-pages/${time}.html</a>. Retrying.`)
             const data = await this.axiosRetry(url, options, (retries - 1))
