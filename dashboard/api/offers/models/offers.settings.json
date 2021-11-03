@@ -41,11 +41,6 @@
     "price": {
       "type": "integer"
     },
-    "contacts": {
-      "type": "component",
-      "repeatable": true,
-      "component": "offers.contact"
-    },
     "floorNumber": {
       "type": "integer"
     },
@@ -60,6 +55,9 @@
     },
     "images": {
       "type": "text"
+    },
+    "contacts": {
+      "type": "json"
     }
   }
 }
