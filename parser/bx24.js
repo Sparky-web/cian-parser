@@ -67,6 +67,11 @@ class Bx24 {
 
         const parser = this.parent.getThis().parser
 
+        // TEST
+        let imagesGot = 0
+        let imagesFailed = 0
+        // TEST
+
         for (let chunk of chunks) {
             await Promise.all(chunk.map(async (url) => {
                 try {
@@ -81,11 +86,16 @@ class Bx24 {
                             b64
                         ]
                     })
+
+                    imagesGot++
                 } catch (e) {
-                    this.logger.error("Failed to fetch image: " + url + " Reason: " + e.stack)
+                    this.logger.error("Failed to fetch image: " + url + " Reason: " + e.message)
+                    imagesFailed++
                 }
             }))
         }
+
+        this.logger.info(`Got images on https://www.cian.ru/sale/flat/${offer.id} offer ${imagesGot}, failed ${imagesFailed}`)
 
         return images
     }

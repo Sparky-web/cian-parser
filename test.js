@@ -44,23 +44,23 @@ class Test {
         await this.parser.start("test")
 
         await this.parser.parseUrl({
-            "id": 15,
-            "url": "https://www.cian.ru/cat.php?deal_type=rent&engine_version=2&is_by_homeowner=1&newobject%5B0%5D=5489&offer_type=flat&room1=1&room2=1&room3=1&room4=1&room5=1&room6=1&type=4",
+            "id": 2,
+            "url": "https://www.cian.ru/cat.php?deal_type=rent&engine_version=2&newobject%5B0%5D=7889&offer_type=flat&room1=1&room2=1&room3=1&room4=1&room5=1&room6=1&room7=1&room9=1&type=4",
             "mode": "parse_all",
-            "responsible": 9,
-            "isFirstParse": true,
-            "name": "ЖК Фили Град Аренда $собственник",
+            "responsible": 1,
+            "isFirstParse": false,
+            "name": "Аренда ЗИЛАРТ ВСЕ",
             "isEnabled": true,
-            "frequency": "every_10_hours",
-            "shouldAddToBitrix": false,
-            "created_at": "2021-08-10T14:57:28.240Z",
-            "updated_at": "2021-09-12T06:41:06.396Z",
+            "frequency": "every_minute",
+            "shouldAddToBitrix": true,
+            "created_at": "2021-09-08T18:04:54.924Z",
+            "updated_at": "2021-11-03T13:09:53.759Z",
             "lastParse": {
-                "id": 182,
-                "items": 1,
-                "addedItems": 0,
-                "timeElapsed": 9,
-                "time": "2021-09-12T06:41:06.359Z"
+                "id": 30,
+                "items": 14,
+                "addedItems": 1,
+                "timeElapsed": 14,
+                "time": "2021-11-03T13:09:53.716Z"
             }
         })
 
