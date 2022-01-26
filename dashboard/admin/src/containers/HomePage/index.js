@@ -228,7 +228,7 @@ const HomePage = ({ history: { push } }) => {
         </div>
       </Container>
 */}
-      <iframe src="http://194.67.86.134:1001/#/dashboard" frameborder="0"
+      <iframe src="http://194.58.96.121:1001/#/dashboard" frameborder="0"
         style={{height: "calc(100vh - 6rem)", width: "100%"}}
       />
     </>
