@@ -23,8 +23,8 @@ let url = "http://localhost:1000"
 let apiUrl = "http://localhost:1001"
 
 if (!(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')) {
-    url = "http://194.67.86.134:1000"
-    apiUrl = "http://194.67.86.134:1001"
+    url = "http://194.58.96.121:1000"
+    apiUrl = "http://194.58.96.121:1001"
 }
 
 const fetchData = async (type, filters = {}) => {
