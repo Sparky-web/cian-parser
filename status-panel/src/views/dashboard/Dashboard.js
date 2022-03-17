@@ -1,4 +1,4 @@
-import React, {lazy, useEffect, useState} from 'react'
+import React, { lazy, useEffect, useState } from 'react'
 import {
     CBadge,
     CButton,
@@ -8,11 +8,10 @@ import {
     CLabel,
     CSpinner,
     CTextarea,
-    CToast,
-    CToastBody,
+    CCollapse
 } from '@coreui/react'
 
-import {formatRelative} from "date-fns"
+import { formatRelative } from "date-fns"
 import ru from "date-fns/locale/ru"
 
 import axios from "axios";
@@ -28,21 +27,24 @@ if (!(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')) {
 }
 
 const fetchData = async (type, filters = {}) => {
-    const {data} = await axios.get(url + "/" + type, {
-        params: {...filters}
+    const { data } = await axios.get(url + "/" + type, {
+        params: { ...filters }
     })
     return data
 }
+
 const startManualParsing = async (id) => {
-    await axios.get(apiUrl + "/start-manual", {params: {id}})
+    await axios.get(apiUrl + "/start-manual", { params: { id } })
 }
+
 const count = async (type, filters) => {
-    const {data} = await axios.get(`${url}/${type}/count`, {
-        params: {...filters}
+    const { data } = await axios.get(`${url}/${type}/count`, {
+        params: { ...filters }
     })
 
     return data
 }
+
 let serializeProxy = proxy => {
     const withoutProtocol = proxy.split("//")?.[1]
     const splat = withoutProtocol.split("@")
@@ -72,18 +74,18 @@ const Dashboard = () => {
         fetchData("links").then(async links => {
             setLinks(links)
             const newLinks = await Promise.all(links.map(async link => {
-                const inBitrix = await count("offers", {inBitrix: true, parsedFromLink: link.id})
-                const all = await count("offers", {parsedFromLink: link.id})
+                const inBitrix = await count("offers", { inBitrix: true, parsedFromLink: link.id })
+                const all = await count("offers", { parsedFromLink: link.id })
                 return {
                     ...link,
-                    count: {all, inBitrix}
+                    count: { all, inBitrix }
                 }
             }))
             setLinks(newLinks)
         })
         fetchData("proxies").then(setProxies)
-        count("offers", {inBitrix: true}).then(r => setOffers(o => ({...o, count: {...o.count, inBitrix: r}})))
-        count("offers").then(r => setOffers(o => ({...o, count: {...o.count, all: r}})))
+        count("offers", { inBitrix: true }).then(r => setOffers(o => ({ ...o, count: { ...o.count, inBitrix: r } })))
+        count("offers").then(r => setOffers(o => ({ ...o, count: { ...o.count, all: r } })))
     }
     const startParsing = async id => {
         setRunningIds([...runningIds, id])
@@ -106,7 +108,7 @@ const Dashboard = () => {
             // })
 
             for (let proxy of arr) {
-                await axios.post(url + "/proxies", {proxy})
+                await axios.post(url + "/proxies", { proxy })
             }
 
             const newProxy = await fetchData("proxies")
@@ -121,19 +123,20 @@ const Dashboard = () => {
         else setSelectedIds([...selectedIds, id])
     }
     const selectAll = () => {
-        if(selectedIds.length)
+        if (selectedIds.length)
             setSelectedIds([])
-        else setSelectedIds(links.map(e=>e.id))
+        else setSelectedIds(links.map(e => e.id))
     }
 
     const selectProxy = (id) => {
         if (selectedProxies.includes(id)) setSelectedProxies(selectedProxies.filter(e => e !== id))
         else setSelectedProxies([...selectedProxies, id])
     }
+
     const selectAllProxies = () => {
-        if(selectedProxies.length)
+        if (selectedProxies.length)
             setSelectedProxies([])
-        else setSelectedProxies(proxies.map(e=>e.id))
+        else setSelectedProxies(proxies.map(e => e.id))
     }
 
     const turnLinks = async (direction) => {
@@ -144,6 +147,7 @@ const Dashboard = () => {
         }))
         await fetchInitialData()
     }
+
     const createFailed = async () => {
         setIsCreating(true)
         try {
@@ -168,75 +172,21 @@ const Dashboard = () => {
     return (
         <>
             <h1>Статус-панель</h1>
-            <br/>
-            <WidgetsDropdown links={links} proxies={proxies} offers={offers}/>
+            <br />
+            <WidgetsDropdown links={links} proxies={proxies} offers={offers} />
 
             <CCard>
                 <CCardHeader>
                     Ссылки {' & '} Прокси
                 </CCardHeader>
                 <CCardBody>
-                    <table className="table table-hover table-outline mb-0 d-sm-table">
-                        <thead className="thead-light">
-                        <tr>
-                            <th>
-                                <input type="checkbox" checked={selectedIds.length === links.length} onChange={() => {selectAll()}}/>
-                            </th>
-                            <th>Ссылка</th>
-                            <th className="text-center">Статус</th>
-                            <th>Последний парсинг</th>
-                            <th className="text-center">Объявлений всего / добавлено в битрикс</th>
-                            <th className="text-right">Ручной парсинг</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        {links.map(e => <tr key={e.id}
-                                            className={selectedIds.includes(e.id) ? "bg-light text-dark" : ""}>
-                            <td>
-                                <input type="checkbox" checked={selectedIds.includes(e.id)} onChange={() => {
-                                    select(e.id)
-                                }}/>
-                            </td>
-                            <td>
-                                <div><a target="_top"
-                                        href={`${url}/admin/plugins/content-manager/collectionType/application::links.links/${e.id}`}>{e.name}</a>
-                                </div>
-                                <div className="small text-muted">
-                                    Добавлено {formatRelative(new Date(e.created_at), new Date(), {locale: ru})}
-                                </div>
-                            </td>
-                            <td className="text-center">{
-                                e.isEnabled ? <CBadge color="success">вкл</CBadge> :
-                                    <CBadge color="danger">выкл</CBadge>
-                            }</td>
-                            <td>
-                                {e.lastParse && <>
-                                    Завершен {formatRelative(new Date(e.lastParse.time), new Date(), {locale: ru})}
-                                    &nbsp;за {e.lastParse.timeElapsed} секунд, получено
-                                    офферов: {e.lastParse.items} из них новых: {e.lastParse.addedItems}
-                                </>}
-                            </td>
-                            <td className="text-center">
-                                {e.count?.all} / <a href="https://persona24.bitrix24.ru/crm/deal/category/9/" target={"_blank"}>{e.count?.inBitrix}</a>
-                            </td>
-                            <td className="text-right">
-                                {runningIds.includes(e.id) ?
-                                    <CButton color="warning" disabled><CSpinner color="light"/></CButton> :
-                                    <CButton color="success" onClick={() => startParsing(e.id)}>
-                                        Начать
-                                    </CButton>}
-                            </td>
-                        </tr>)}
-                        </tbody>
-                    </table>
-
+                    <LinksTable links={links} selectedIds={selectedIds} runningIds={runningIds} selectAll={selectAll} select={select} startParsing={startParsing} />
                     <br />
 
                     <div className="d-flex flex-column align-items-end">
                         <h6 className={"text-dark"}>Создать недостающие лиды в б24</h6>
                         {isCreating ?
-                            <CButton disabled color="warning"><CSpinner color={"light"}/></CButton> :
+                            <CButton disabled color="warning"><CSpinner color={"light"} /></CButton> :
                             <CButton color={"warning"} className="" onClick={createFailed}>Coздать</CButton>
                         }
                     </div>
@@ -249,41 +199,25 @@ const Dashboard = () => {
                         <CButton color="danger" className="ml-1" onClick={() => {
                             turnLinks("off")
                         }}>Отключить</CButton>
-                    </div> : <div/>}
+                    </div> : <div />}
 
-                    <br/>
+                    <br />
 
                     <table className="table table-hover table-outline mb-0 d-sm-table">
                         <thead className="thead-light">
-                        <tr>
-                            <th>
-                                <input type="checkbox" checked={selectedProxies.length === proxies.length} onChange={() => {selectAllProxies()}}/>
-                            </th>
-                            <th>Прокси</th>
-                            <th className="text-center">Статус</th>
-                            <th className="text-right">Неуд. попытки</th>
-                        </tr>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" checked={selectedProxies.length === proxies.length} onChange={() => { selectAllProxies() }} />
+                                </th>
+                                <th>Прокси</th>
+                                <th className="text-center">Статус</th>
+                                <th className="text-center">Неуд. попытки</th>
+                                <th className="text-right">Действия</th>
+                            </tr>
                         </thead>
                         <tbody>
-
-                        {proxies.map(e => <tr key={e.id}>
-                            <td><input type="checkbox" checked={selectedProxies.includes(e.id)} onChange={() => {selectProxy(e.id)}}/></td>
-                            <td>
-                                <div><a href={`${url}/admin/plugins/content-manager/collectionType/application::proxies.proxies/${e.id}`} target={"_top"}>
-                                    {e.proxy}
-                                </a></div>
-                                <div className="small text-muted">
-                                    Добавлено {formatRelative(new Date(e.created_at), new Date(), {locale: ru})}
-                                </div>
-                            </td>
-                            <td className="text-center">{
-                                e.enabled ? <CBadge color="success">вкл</CBadge> :
-                                    <CBadge color="danger">выкл</CBadge>
-                            }</td>
-                            <td className="text-right">{e.unsuccesfulAttempts}</td>
-                        </tr>)}
+                            {proxies.map(e => <ProxyRow selectedProxies={selectedProxies} selectProxy={selectProxy} e={e} key={e.id} />)}
                         </tbody>
-
                     </table>
 
                     {selectedProxies.length ? <div className="mt-1">
@@ -291,8 +225,8 @@ const Dashboard = () => {
                         <CButton color="danger" onClick={() => {
                             resetAttempts()
                         }}>Сбросить неудачные попытки</CButton>
-                    </div> : <div/>}
-                    <br/>
+                    </div> : <div />}
+                    <br />
                     <div>
                         <h3>Пакетное добавление прокси</h3>
                         <CLabel>Http прокси (каждая с новой строки) в формате http://username:password@ip:port</CLabel>
@@ -300,23 +234,185 @@ const Dashboard = () => {
                             onChange={e => setProxyString(e.target.value)}
                             value={proxyString}
                             rows="5"
-                            style={{marginBottom: "0.5rem"}}
+                            style={{ marginBottom: "0.5rem" }}
                         />
                         {proxyLoading ?
-                            <CButton disabled color="warning"><CSpinner color={"light"}/></CButton> :
+                            <CButton disabled color="warning"><CSpinner color={"light"} /></CButton> :
                             <CButton color={"primary"} onClick={addProxies}>Добавить</CButton>
                         }
                     </div>
 
                     <div className={"mt-3"}>
-                        <a href={`${apiUrl}/logs/combined`} target={"_blank"} className={"mt-3"}>
-                            Посмотреть логи
-                        </a>
+                        <AllLogs />
                     </div>
                 </CCardBody>
             </CCard>
+
         </>
     )
 };
 
 export default Dashboard
+
+function LinksTable({ selectAll, select, startParsing, selectedIds, runningIds, links }) {
+    return (<table className="table table-hover table-outline mb-0 d-sm-table">
+        <thead className="thead-light">
+            <tr>
+                <th>
+                    <input type="checkbox" checked={selectedIds.length === links.length} onChange={() => {
+                        selectAll();
+                    }} />
+                </th>
+                <th>Ссылка</th>
+                <th className="text-center">Статус</th>
+                <th>Последний парсинг</th>
+                <th className="text-center">Объявлений всего / добавлено в битрикс</th>
+                <th className="text-right">Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {links.map(e => (<LinkRow e={e} select={select} selectedIds={selectedIds} runningIds={runningIds} url={url} startParsing={startParsing} />))}
+        </tbody>
+    </table>
+    );
+}
+
+function LinkRow({ e, select, startParsing, selectedIds, runningIds }) {
+    const [open, setOpen] = useState(false)
+    const [logs, setLogs] = useState([])
+
+    useEffect(() => {
+        if (open) {
+            fetch(url + "/logs?_sort=created_at:DESC&link=" + e.id).then(r => r.json()).then(setLogs)
+        }
+    }, [open])
+
+    return (<>
+        <tr key={e.id}
+            className={selectedIds.includes(e.id) ? "bg-light text-dark" : ""}
+            style={{ background: e.lastParse.isError && "rgba(249, 177, 22, 0.2)" }}>
+            <td style={{ display: "flex", alignItems: "center" }}>
+                <input type="checkbox" checked={selectedIds.includes(e.id)} onChange={() => {
+                    select(e.id);
+                }} />
+            </td>
+            <td>
+                <div><a target="_top" href={`${url}/admin/plugins/content-manager/collectionType/application::links.links/${e.id}`}>{e.name}</a>
+                </div>
+                <div className="small text-muted">
+                    Добавлено {formatRelative(new Date(e.created_at), new Date(), {
+                        locale: ru
+                    })}
+                </div>
+            </td>
+            <td className="text-center">{e.isEnabled ? <CBadge color="success">вкл</CBadge> : <CBadge color="danger">выкл</CBadge>}</td>
+            <td>
+                {e.lastParse && <>
+                    Завершен {formatRelative(new Date(e.lastParse.time), new Date(), {
+                        locale: ru
+                    })}
+                    &nbsp;за {e.lastParse.timeElapsed} секунд, получено
+                    офферов: {e.lastParse.items} из них новых: {e.lastParse.addedItems}
+                </>}
+            </td>
+            <td className="text-center">
+                {e.count?.all} / <a href="https://persona24.bitrix24.ru/crm/deal/category/9/" target={"_blank"}>{e.count?.inBitrix}</a>
+            </td>
+            <td className="text-center d-flex align-items-center justify-content-end">
+                {runningIds.includes(e.id) ? <CButton color="warning" disabled><CSpinner color="light" /></CButton> : <CButton color="success" onClick={() => startParsing(e.id)}>
+                    Парсинг
+                </CButton>}
+                <CButton style={{ marginLeft: "0.5rem" }} color="primary" onClick={() => setOpen(!open)}>Логи</CButton>
+            </td>
+        </tr>
+        <LogsRow open={open} logs={logs} />
+    </>);
+}
+
+function ProxyRow({ selectProxy, e, selectedProxies }) {
+    const [open, setOpen] = useState(false)
+    const [logs, setLogs] = useState([])
+
+    useEffect(() => {
+        if (open) {
+            fetch(url + "/logs?_sort=created_at:DESC&proxy=" + e.id).then(r => r.json()).then(setLogs)
+        }
+    }, [open])
+
+    return (<>
+        <tr>
+            <td><input type="checkbox" checked={selectedProxies.includes(e.id)} onChange={() => {
+                selectProxy(e.id);
+            }} /></td>
+            <td>
+                <div><a href={`${url}/admin/plugins/content-manager/collectionType/application::proxies.proxies/${e.id}`} target={"_top"}>
+                    {e.proxy}
+                </a></div>
+                <div className="small text-muted">
+                    Добавлено {formatRelative(new Date(e.created_at), new Date(), {
+                        locale: ru
+                    })}
+                </div>
+            </td>
+            <td className="text-center">{e.enabled ? <CBadge color="success">вкл</CBadge> : <CBadge color="danger">выкл</CBadge>}</td>
+            <td className="text-center">{e.unsuccesfulAttempts}</td>
+            <td className="text-right">
+                <CButton color="primary" onClick={() => setOpen(!open)}>Логи</CButton>
+            </td>
+        </tr>
+        <LogsRow open={open} logs={logs} />
+    </>);
+}
+
+function LogsRow({ open, logs }) {
+    return (<tr>
+        <td colspan="100%" style={{
+            padding: 0,
+            border: "none"
+        }}>
+            <LogsCollapse open={open} logs={logs} />
+        </td>
+    </tr>);
+}
+
+function AllLogs() {
+    const [open, setOpen] = useState(false)
+    const [logs, setLogs] = useState([])
+
+    useEffect(() => {
+        if (open) {
+            fetch(url + "/logs?_sort=created_at:DESC&_limit=500").then(r => r.json()).then(setLogs)
+        }
+    }, [open])
+
+
+    return <>
+        <CButton color="primary" onClick={() => setOpen(!open)}>
+            Все логи
+        </CButton>
+        <div className="mt-1">
+            <LogsCollapse open={open} logs={logs} noPadding />
+        </div>
+    </>
+}
+
+function LogsCollapse({ open, logs, noPadding }) {
+    return (<CCollapse show={open}>
+        <div style={{
+            padding: noPadding ? 0 : "1rem"
+        }}>
+            {logs.map(log => <div style={{
+                color: log.level === "error" ? "#e55353" : ""
+            }}>
+                <span>
+                    {formatRelative(new Date(log.created_at), new Date(), {
+                        locale: ru
+                    })}&nbsp;
+                </span>
+                <span dangerouslySetInnerHTML={{
+                    __html: log.log
+                }}></span>
+            </div>)}
+        </div>
+    </CCollapse>);
+}

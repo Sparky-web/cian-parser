@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     every_minute: "* * * * *",
     every_5_minutes: "*/5 * * * *",
     every_10_minutes: "*/10 * * * *",

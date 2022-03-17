@@ -75,6 +75,10 @@
     "shouldAddToBitrix": {
       "type": "boolean",
       "default": true
+    },
+    "logs": {
+      "via": "link",
+      "collection": "logs"
     }
   }
 }

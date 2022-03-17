@@ -24,6 +24,10 @@
     },
     "cookie": {
       "type": "string"
+    },
+    "logs": {
+      "via": "proxy",
+      "collection": "logs"
     }
   }
 }
