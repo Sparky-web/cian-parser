@@ -1,0 +1,105 @@
+{
+  "key": "plugin_content_manager_configuration_content_types::api::config.config",
+  "value": {
+    "uid": "api::config.config",
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "bitrixWebhookUrl",
+      "defaultSortBy": "bitrixWebhookUrl",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "proxyAttemptsLimit": {
+        "edit": {
+          "label": "proxyAttemptsLimit",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "proxyAttemptsLimit",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "bitrixWebhookUrl": {
+        "edit": {
+          "label": "bitrixWebhookUrl",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "bitrixWebhookUrl",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "createdAt": {
+        "edit": {
+          "label": "createdAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "createdAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedAt": {
+        "edit": {
+          "label": "updatedAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "updatedAt",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "proxyAttemptsLimit",
+        "bitrixWebhookUrl",
+        "createdAt"
+      ],
+      "editRelations": [],
+      "edit": [
+        [
+          {
+            "name": "proxyAttemptsLimit",
+            "size": 4
+          },
+          {
+            "name": "bitrixWebhookUrl",
+            "size": 6
+          }
+        ]
+      ]
+    }
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

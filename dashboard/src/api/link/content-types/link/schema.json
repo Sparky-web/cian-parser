@@ -1,0 +1,82 @@
+{
+  "kind": "collectionType",
+  "collectionName": "links",
+  "info": {
+    "singularName": "link",
+    "pluralName": "links",
+    "displayName": "Links",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "url": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "enumeration",
+      "enum": [
+        "parse_all",
+        "parse_first_pages"
+      ]
+    },
+    "responsible": {
+      "type": "integer"
+    },
+    "isFirstParse": {
+      "type": "boolean"
+    },
+    "frequency": {
+      "type": "enumeration",
+      "enum": [
+        "every_minute",
+        "every_5_minutes",
+        "every_10_minutes",
+        "every_15_minutes",
+        "every_30_minutes",
+        "every_60_minutes",
+        "every_2_hours",
+        "every_3_hours",
+        "every_4_hours",
+        "every_5_hours",
+        "every_6_hours",
+        "every_7_hours",
+        "every_8_hours",
+        "every_9_hours",
+        "every_10_hours",
+        "every_11_hours",
+        "every_12_hours",
+        "every_day"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "isEnabled": {
+      "type": "boolean"
+    },
+    "lastParse": {
+      "displayName": "LastParse",
+      "type": "component",
+      "repeatable": false,
+      "component": "links.last-parse"
+    },
+    "shouldAddToBitrix": {
+      "type": "boolean"
+    },
+    "offers": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::offer.offer",
+      "mappedBy": "parsedFromLink"
+    },
+    "logs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::log.log",
+      "mappedBy": "link"
+    }
+  }
+}

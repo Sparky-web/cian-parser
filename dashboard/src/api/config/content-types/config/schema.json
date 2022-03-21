@@ -1,0 +1,22 @@
+{
+  "kind": "singleType",
+  "collectionName": "configs",
+  "info": {
+    "singularName": "config",
+    "pluralName": "configs",
+    "displayName": "config",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "proxyAttemptsLimit": {
+      "type": "integer"
+    },
+    "bitrixWebhookUrl": {
+      "type": "string"
+    }
+  }
+}

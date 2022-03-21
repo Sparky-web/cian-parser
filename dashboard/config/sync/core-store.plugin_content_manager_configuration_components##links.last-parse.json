@@ -1,0 +1,134 @@
+{
+  "key": "plugin_content_manager_configuration_components::links.last-parse",
+  "value": {
+    "uid": "links.last-parse",
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "id",
+      "defaultSortBy": "id",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "items": {
+        "edit": {
+          "label": "items",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "items",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "addedItems": {
+        "edit": {
+          "label": "addedItems",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "addedItems",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "timeElapsed": {
+        "edit": {
+          "label": "timeElapsed",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "timeElapsed",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "time": {
+        "edit": {
+          "label": "time",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "time",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "isError": {
+        "edit": {
+          "label": "isError",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "isError",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "items",
+        "addedItems",
+        "timeElapsed"
+      ],
+      "edit": [
+        [
+          {
+            "name": "items",
+            "size": 4
+          },
+          {
+            "name": "addedItems",
+            "size": 4
+          },
+          {
+            "name": "timeElapsed",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "time",
+            "size": 6
+          },
+          {
+            "name": "isError",
+            "size": 4
+          }
+        ]
+      ],
+      "editRelations": []
+    },
+    "isComponent": true
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

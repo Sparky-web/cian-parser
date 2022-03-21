@@ -8,6 +8,7 @@ import httpsProxyAgent from "https-proxy-agent"
 import { JSDOM } from "jsdom"
 import cron from "node-cron"
 import filesystem from "./filesystem.js"
+import bx24 from "./bx24.js"
 
 let stack = []
 let running = false
@@ -32,17 +33,21 @@ async function reqMiddleware(config) {
 
 async function addUnsuccessfulCountToProxy(proxyString) {
     let proxy = await strapi.get("proxies", {
-        proxy_contains: proxyString
+        filters: {
+            proxy: {
+                $contains: proxyString
+            }
+        }
     })
     proxy = proxy[0]
 
     await strapi.update("proxies", {
         ...proxy,
         unsuccesfulAttempts: proxy.unsuccesfulAttempts ? proxy.unsuccesfulAttempts + 1 : 1,
-        enabled: proxy.unsuccesfulAttempts < config.proxyAttemptsLimit
+        isEnabled: proxy.unsuccesfulAttempts < config.proxyAttemptsLimit
     })
 
-    proxies = await strapi.get("proxies", { enabled: true })
+    proxies = await strapi.get("proxies", { filters: { isEnabled: true } })
 }
 
 async function errorHandler(error) {
@@ -85,7 +90,7 @@ async function getAxios() {
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
     }
 
-    proxies = await strapi.get("proxies", { enabled: true })
+    proxies = await strapi.get("proxies", { filters: { isEnabled: true } })
 
     axios.interceptors.request.use(reqMiddleware);
     axios.interceptors.response.use(resMiddleware, errorHandler);
@@ -95,7 +100,7 @@ async function getAxios() {
 
 async function start(mode) {
     jobs = []
-    const links = await strapi.get("links", { isEnabled: true })
+    const links = await strapi.get("links", { filters: { isEnabled: true }, populate: "*" })
 
     if (mode === "test") return;
 
@@ -160,8 +165,8 @@ async function getPageCount(url, link) {
 
 function serializeOffer(offer, document) {
     return ({
-        title: document.querySelector(`a[href="${offer.fullUrl}"]`)?.parentNode?.querySelector(`div[data-name="TitleComponent"]`)?.textContent?.trim()
-            || document.querySelector("h1")?.innerHTML
+        title: offer.title || document.querySelector(`a[href="${offer.fullUrl}"]`)?.parentNode?.querySelector(`*[data-mark="OfferTitle"]`)?.textContent?.trim()
+            || document.querySelector("h1")?.textContent?.trim()
         ,
         description: offer.description,
         price: offer.bargainTerms?.priceRur || offer.bargainTerms?.price,
@@ -228,7 +233,15 @@ async function parseItem(url, responsible) {
 
 async function addOffers(offers, link) {
     const uIds = _.map(offers, "uId")
-    const oldOffers = await strapi.get("offers", { _limit: -1, uId_in: uIds })
+    const oldOffers = await strapi.get("offers", {
+        pagination: { page: 1, pageSize: 500 }, 
+        filters: {
+            uId: {
+                $in: uIds
+            }
+        }
+    })
+
     const oldUIds = _.map(oldOffers, "uId")
 
     const newUIds = _.difference(uIds, oldUIds)
@@ -263,7 +276,7 @@ async function parseUrl(link) {
 
     logger.info({ message: `Parsed started`, link: link.id })
 
-    proxies = await strapi.get("proxies", { enabled: true })
+    proxies = await strapi.get("proxies", { filters: {isEnabled: true} })
     const pageCount = await getPageCount(link.url, link)
 
     logger.info({ message: `Got pages: ${pageCount}`, link: link.id })
@@ -369,5 +382,6 @@ export default {
     start,
     stop,
     parseUrl,
-    updateOneUrl
+    updateOneUrl,
+    parseItem
 }

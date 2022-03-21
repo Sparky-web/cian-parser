@@ -70,7 +70,7 @@ app.all("/update", async (req, res) => {
 app.get("/start-manual", async (req, res) => {
     try {
         const { id } = req.query
-        const [link] = await strapi.get("links", { id })
+        const [link] = await strapi.get("links", {filters: {id}, populate: "*"})
 
         const data = await parser.parseUrl(link)
         res.send(data)
@@ -89,8 +89,8 @@ app.get("/create-failed/:linkId", async (req, res) => {
         const { linkId } = req.params
 
         const offers = linkId === "all" ?
-            await strapi.getOffers({ inBitrix: false }) :
-            await strapi.getOffers({ parsedFromLink: linkId, inBitrix: false })
+            await strapi.get("offers", { filters: {inBitrix: false} }) :
+            await strapi.get("offers", { filters: {parsedFromLink: linkId, inBitrix: false} })
 
         const created = []
 

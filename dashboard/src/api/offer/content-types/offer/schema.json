@@ -1,0 +1,56 @@
+{
+  "kind": "collectionType",
+  "collectionName": "offers",
+  "info": {
+    "singularName": "offer",
+    "pluralName": "offers",
+    "displayName": "Offers",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "address": {
+      "type": "string"
+    },
+    "link": {
+      "type": "string"
+    },
+    "jk": {
+      "type": "string"
+    },
+    "jsLink": {
+      "type": "string"
+    },
+    "dealType": {
+      "type": "string"
+    },
+    "images": {
+      "type": "text"
+    },
+    "uId": {
+      "type": "integer",
+      "unique": true
+    },
+    "inBitrix": {
+      "type": "boolean"
+    },
+    "contacts": {
+      "type": "json"
+    },
+    "parsedFromLink": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::link.link",
+      "inversedBy": "offers"
+    }
+  }
+}

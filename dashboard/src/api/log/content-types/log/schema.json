@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "logs",
+  "info": {
+    "singularName": "log",
+    "pluralName": "logs",
+    "displayName": "Logs",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "log": {
+      "type": "text"
+    },
+    "level": {
+      "type": "string"
+    },
+    "link": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::link.link",
+      "inversedBy": "logs"
+    },
+    "proxy": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proxy.proxy",
+      "inversedBy": "logs"
+    }
+  }
+}

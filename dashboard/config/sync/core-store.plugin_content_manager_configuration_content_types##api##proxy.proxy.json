@@ -1,0 +1,160 @@
+{
+  "key": "plugin_content_manager_configuration_content_types::api::proxy.proxy",
+  "value": {
+    "uid": "api::proxy.proxy",
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "proxy",
+      "defaultSortBy": "proxy",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "proxy": {
+        "edit": {
+          "label": "proxy",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "proxy",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "unsuccesfulAttempts": {
+        "edit": {
+          "label": "unsuccesfulAttempts",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "unsuccesfulAttempts",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "isEnabled": {
+        "edit": {
+          "label": "isEnabled",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "isEnabled",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "cookie": {
+        "edit": {
+          "label": "cookie",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "cookie",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "logs": {
+        "edit": {
+          "label": "logs",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "level"
+        },
+        "list": {
+          "label": "logs",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "createdAt": {
+        "edit": {
+          "label": "createdAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "createdAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedAt": {
+        "edit": {
+          "label": "updatedAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "updatedAt",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "proxy",
+        "unsuccesfulAttempts",
+        "isEnabled"
+      ],
+      "edit": [
+        [
+          {
+            "name": "proxy",
+            "size": 6
+          },
+          {
+            "name": "unsuccesfulAttempts",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "isEnabled",
+            "size": 4
+          },
+          {
+            "name": "cookie",
+            "size": 6
+          }
+        ]
+      ],
+      "editRelations": [
+        "logs"
+      ]
+    }
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

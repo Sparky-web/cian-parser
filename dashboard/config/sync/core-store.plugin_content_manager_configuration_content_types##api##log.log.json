@@ -1,0 +1,138 @@
+{
+  "key": "plugin_content_manager_configuration_content_types::api::log.log",
+  "value": {
+    "uid": "api::log.log",
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "level",
+      "defaultSortBy": "level",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "log": {
+        "edit": {
+          "label": "log",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "log",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "level": {
+        "edit": {
+          "label": "level",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "level",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "link": {
+        "edit": {
+          "label": "link",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "url"
+        },
+        "list": {
+          "label": "link",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "proxy": {
+        "edit": {
+          "label": "proxy",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "proxy"
+        },
+        "list": {
+          "label": "proxy",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "createdAt": {
+        "edit": {
+          "label": "createdAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "createdAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedAt": {
+        "edit": {
+          "label": "updatedAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "updatedAt",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "log",
+        "level",
+        "createdAt"
+      ],
+      "edit": [
+        [
+          {
+            "name": "log",
+            "size": 6
+          },
+          {
+            "name": "level",
+            "size": 6
+          }
+        ]
+      ],
+      "editRelations": [
+        "link",
+        "proxy"
+      ]
+    }
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

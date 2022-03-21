@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "proxies",
+  "info": {
+    "singularName": "proxy",
+    "pluralName": "proxies",
+    "displayName": "Proxies",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "proxy": {
+      "type": "string"
+    },
+    "unsuccesfulAttempts": {
+      "type": "integer"
+    },
+    "isEnabled": {
+      "type": "boolean"
+    },
+    "cookie": {
+      "type": "string"
+    },
+    "logs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::log.log",
+      "mappedBy": "proxy"
+    }
+  }
+}

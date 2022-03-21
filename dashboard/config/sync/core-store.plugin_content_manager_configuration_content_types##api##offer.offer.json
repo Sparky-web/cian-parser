@@ -1,0 +1,294 @@
+{
+  "key": "plugin_content_manager_configuration_content_types::api::offer.offer",
+  "value": {
+    "uid": "api::offer.offer",
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "title",
+      "defaultSortBy": "title",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "title": {
+        "edit": {
+          "label": "title",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "title",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "description": {
+        "edit": {
+          "label": "description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "description",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "address": {
+        "edit": {
+          "label": "address",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "address",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "link": {
+        "edit": {
+          "label": "link",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "link",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "jk": {
+        "edit": {
+          "label": "jk",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "jk",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "jsLink": {
+        "edit": {
+          "label": "jsLink",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "jsLink",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "dealType": {
+        "edit": {
+          "label": "dealType",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "dealType",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "images": {
+        "edit": {
+          "label": "images",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "images",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "uId": {
+        "edit": {
+          "label": "uId",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "uId",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "inBitrix": {
+        "edit": {
+          "label": "inBitrix",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "inBitrix",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "contacts": {
+        "edit": {
+          "label": "contacts",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "contacts",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "parsedFromLink": {
+        "edit": {
+          "label": "parsedFromLink",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "url"
+        },
+        "list": {
+          "label": "parsedFromLink",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "createdAt": {
+        "edit": {
+          "label": "createdAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "createdAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedAt": {
+        "edit": {
+          "label": "updatedAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "updatedAt",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "title",
+        "description",
+        "address"
+      ],
+      "editRelations": [
+        "parsedFromLink"
+      ],
+      "edit": [
+        [
+          {
+            "name": "title",
+            "size": 6
+          },
+          {
+            "name": "description",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "address",
+            "size": 6
+          },
+          {
+            "name": "link",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "jk",
+            "size": 6
+          },
+          {
+            "name": "jsLink",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "dealType",
+            "size": 6
+          },
+          {
+            "name": "images",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "uId",
+            "size": 4
+          },
+          {
+            "name": "inBitrix",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "contacts",
+            "size": 12
+          }
+        ]
+      ]
+    }
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

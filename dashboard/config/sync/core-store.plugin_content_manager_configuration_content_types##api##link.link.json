@@ -1,0 +1,272 @@
+{
+  "key": "plugin_content_manager_configuration_content_types::api::link.link",
+  "value": {
+    "uid": "api::link.link",
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "id",
+      "defaultSortBy": "url",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "url": {
+        "edit": {
+          "label": "url",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "url",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "mode": {
+        "edit": {
+          "label": "mode",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "mode",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "responsible": {
+        "edit": {
+          "label": "responsible",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "responsible",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "isFirstParse": {
+        "edit": {
+          "label": "isFirstParse",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "isFirstParse",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "frequency": {
+        "edit": {
+          "label": "frequency",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "frequency",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "name": {
+        "edit": {
+          "label": "name",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "name",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "isEnabled": {
+        "edit": {
+          "label": "isEnabled",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "isEnabled",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "lastParse": {
+        "edit": {
+          "label": "lastParse",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "lastParse",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "shouldAddToBitrix": {
+        "edit": {
+          "label": "shouldAddToBitrix",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "shouldAddToBitrix",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "offers": {
+        "edit": {
+          "label": "offers",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "title"
+        },
+        "list": {
+          "label": "offers",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "logs": {
+        "edit": {
+          "label": "logs",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "level"
+        },
+        "list": {
+          "label": "logs",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "createdAt": {
+        "edit": {
+          "label": "createdAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "createdAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedAt": {
+        "edit": {
+          "label": "updatedAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "updatedAt",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "edit": [
+        [
+          {
+            "name": "name",
+            "size": 6
+          },
+          {
+            "name": "url",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "mode",
+            "size": 6
+          },
+          {
+            "name": "frequency",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "isEnabled",
+            "size": 6
+          },
+          {
+            "name": "isFirstParse",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "responsible",
+            "size": 6
+          },
+          {
+            "name": "shouldAddToBitrix",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "lastParse",
+            "size": 12
+          }
+        ]
+      ],
+      "editRelations": [
+        "offers",
+        "logs"
+      ],
+      "list": [
+        "id",
+        "url",
+        "mode",
+        "responsible"
+      ]
+    }
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

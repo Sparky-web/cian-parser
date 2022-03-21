@@ -1,0 +1,88 @@
+{
+  "name": "Public",
+  "description": "Default role given to unauthenticated user.",
+  "type": "public",
+  "permissions": [
+    {
+      "action": "api::config.config.delete"
+    },
+    {
+      "action": "api::config.config.find"
+    },
+    {
+      "action": "api::config.config.update"
+    },
+    {
+      "action": "api::link.link.create"
+    },
+    {
+      "action": "api::link.link.delete"
+    },
+    {
+      "action": "api::link.link.find"
+    },
+    {
+      "action": "api::link.link.findOne"
+    },
+    {
+      "action": "api::link.link.update"
+    },
+    {
+      "action": "api::log.log.create"
+    },
+    {
+      "action": "api::log.log.delete"
+    },
+    {
+      "action": "api::log.log.find"
+    },
+    {
+      "action": "api::log.log.findOne"
+    },
+    {
+      "action": "api::log.log.update"
+    },
+    {
+      "action": "api::offer.offer.create"
+    },
+    {
+      "action": "api::offer.offer.delete"
+    },
+    {
+      "action": "api::offer.offer.find"
+    },
+    {
+      "action": "api::offer.offer.findOne"
+    },
+    {
+      "action": "api::offer.offer.update"
+    },
+    {
+      "action": "api::proxy.proxy.create"
+    },
+    {
+      "action": "api::proxy.proxy.delete"
+    },
+    {
+      "action": "api::proxy.proxy.find"
+    },
+    {
+      "action": "api::proxy.proxy.findOne"
+    },
+    {
+      "action": "api::proxy.proxy.update"
+    },
+    {
+      "action": "plugin::users-permissions.auth.callback"
+    },
+    {
+      "action": "plugin::users-permissions.auth.connect"
+    },
+    {
+      "action": "plugin::users-permissions.auth.register"
+    },
+    {
+      "action": "plugin::users-permissions.user.me"
+    }
+  ]
+}

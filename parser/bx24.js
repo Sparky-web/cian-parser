@@ -1,8 +1,9 @@
-import _axios from "axios"
+import axios from "axios"
 import _ from "lodash"
 import parser from "./parser.js"
 import logger from "./logger.js";
 import strapi from "./strapi.js";
+import config from "./config.js";
 
 function objectToQuery(obj, prefix) {
     const str = [];
@@ -46,9 +47,12 @@ async function getFields(offer) {
 
 async function getContactId(offer) {
     let contactId;
-    for (let contact of offer.contacts) {
-        contactId = await findContact(contact.number)
-        if (contactId) break;
+
+    if (offer.contacts?.length) {
+        for (let contact of offer.contacts) {
+            contactId = await findContact(contact.number)
+            if (contactId) break;
+        }
     }
 
     if (!contactId) contactId = await createContact(offer.contacts, offer)
@@ -146,7 +150,8 @@ async function createContact(phones, offer) {
 }
 
 export default {
-    createContact, 
+    createContact,
+    createEntry,
     updateEntry,
     remind
 }
