@@ -141,8 +141,8 @@ async function findContact(phone) {
 async function createContact(phones, offer) {
     const { data } = await axios.post(`${config.bitrixWebhookUrl}/crm.contact.add?${objectToQuery({
         fields: {
-            NAME: phones[0].name || "Без имени",
-            PHONE: phones.map(e => ({ "VALUE": e.number, "VALUE_TYPE": "WORK" }))
+            NAME: phones?.[0].name || "Без имени",
+            PHONE: phones?.map(e => ({ "VALUE": e.number, "VALUE_TYPE": "WORK" }))
         }
     })}`)
 
