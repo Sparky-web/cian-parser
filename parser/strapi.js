@@ -12,7 +12,7 @@ axios.interceptors.request.use(config => {
 
 export async function get(type, filters, options = {}) {
     const { data: {data} } = await axios.get(`/${type}?${qs.stringify(filters)}`, { ...options })
-    return data.length ? data.map(e => ({id: e.id, ...e.attributes})) : {id: data.id, ...data.attributes}
+    return Array.isArray(data) ? data.map(e => ({id: e.id, ...e.attributes})) : {id: data.id, ...data.attributes}
 }
 
 export async function create(type, data, options = {}) {
