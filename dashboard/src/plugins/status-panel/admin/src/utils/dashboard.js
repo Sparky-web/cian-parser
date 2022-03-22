@@ -37,7 +37,6 @@ var fromObject = function (params, skipobjects, prefix) {
 };
 
 export const fetchData = async (type, filters = {}) => {
-    console.log(qs.stringify(filters), filters, fromObject(filters))
     const url = `/api/${type}?${fromObject(filters)}`
     console.log(url)
     const { data } = await axios.get(url)
@@ -45,7 +44,7 @@ export const fetchData = async (type, filters = {}) => {
 }
 
 export const startManualParsing = async (id) => {
-    await axios.get("/start-manual", { params: { id } })
+    await axios.get(process.env.STRAPI_ADMIN_BACKEND_URL.replace(/1000/g, "1001") + "/start-manual", { params: { id } })
 }
 
 export const serializeProxy = proxy => {
