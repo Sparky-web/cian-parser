@@ -44,7 +44,10 @@ export const fetchData = async (type, filters = {}) => {
 }
 
 export const startManualParsing = async (id) => {
-    await axios.get(process.env.STRAPI_ADMIN_BACKEND_URL.replace(/1000/g, "1001") + "/start-manual", { params: { id } })
+    let url = new URL(location)
+    url.port = 1001
+
+    await axios.get(url.origin + "/start-manual", { params: { id } })
 }
 
 export const serializeProxy = proxy => {
