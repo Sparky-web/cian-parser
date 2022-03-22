@@ -5,6 +5,7 @@ import filesystem from "./filesystem.js"
 import parser from "./parser.js"
 import bx24 from "./bx24.js"
 import logger from "./logger.js"
+import strapi from "./strapi.js"
 
 async function updateOne(req, res) {
     try {
@@ -32,11 +33,12 @@ const app = express()
 
 app.use(express.json())
 app.use(cors())
-app.use(express.static("../status-panel/build"))
 
-app.get("/", (req, res) => {
-    res.sendFile("../status-panel/build/index.html");
-});
+// app.use(express.static("../status-panel/build"))
+
+// app.get("/", (req, res) => {
+//     res.sendFile("../status-panel/build/index.html");
+// });
 
 app.get("/logs", async (req, res) => {
     logger.query({
@@ -56,21 +58,26 @@ app.get("/error-pages/:filename", async (req, res) => {
 })
 
 app.all("/update", async (req, res) => {
-    if (req.body?.model === "links" || req.body?.model === "config" || !req.body?.model) {
-        logger.info(JSON.stringify(req.body))
-        logger.info("restarting because links have been modified")
-        await parser.stop()
-        await parser.start()
-        logger.info("restarted")
-    }
+    try {
+        if (req.body?.model === "link" || req.body?.model === "config" || !req.body?.model) {
+            // logger.info(JSON.stringify(req.body))
+            logger.info("restarting because links have been modified")
+            await parser.stop()
+            await parser.start()
+            logger.info("restarted")
+        }
 
-    res.send()
+        res.send("")
+    } catch (e) {
+        console.error(e)
+        res.send(e.stack || e)
+    }
 })
 
 app.get("/start-manual", async (req, res) => {
     try {
         const { id } = req.query
-        const [link] = await strapi.get("links", {filters: {id}, populate: "*"})
+        const [link] = await strapi.get("links", { filters: { id }, populate: "*" })
 
         const data = await parser.parseUrl(link)
         res.send(data)
@@ -89,8 +96,8 @@ app.get("/create-failed/:linkId", async (req, res) => {
         const { linkId } = req.params
 
         const offers = linkId === "all" ?
-            await strapi.get("offers", { filters: {inBitrix: false} }) :
-            await strapi.get("offers", { filters: {parsedFromLink: linkId, inBitrix: false} })
+            await strapi.get("offers", { filters: { inBitrix: false } }) :
+            await strapi.get("offers", { filters: { parsedFromLink: linkId, inBitrix: false } })
 
         const created = []
 
