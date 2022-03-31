@@ -43,12 +43,18 @@ export const fetchData = async (type, filters = {}) => {
     return data
 }
 
+window.fetchData = fetchData
+
 export const startManualParsing = async (id) => {
+    await axios.get(apiUrl + "/start-manual", { params: { id } })
+}
+
+export const apiUrl = (() => {
     let url = new URL(location)
     url.port = 1001
 
-    await axios.get(url.origin + "/start-manual", { params: { id } })
-}
+    return url.origin
+})()
 
 export const serializeProxy = proxy => {
     const withoutProtocol = proxy.split("//")?.[1]

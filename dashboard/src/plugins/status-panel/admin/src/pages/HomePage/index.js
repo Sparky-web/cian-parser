@@ -4,41 +4,35 @@
  *
  */
 
-import pluginId from '../../pluginId';
-import React, { useEffect, useState, memo } from 'react'
-import { count } from '../../utils/dashboard';
+import React, { useContext, useState, memo } from 'react'
 
-import { Box, Link, Button, Flex, Stack } from "@strapi/design-system"
+import { Box, Button, Stack } from "@strapi/design-system"
 import { BaseHeaderLayout, ContentLayout } from "@strapi/design-system/Layout"
 import { Typography } from '@strapi/design-system/Typography';
 import { Loader } from '@strapi/design-system/Loader';
 
 import axios from '../../utils/axiosInstance';
-import Links from './Links';
-import Proxies from './Proxies';
-import Logs from './Logs';
-import Widgets from './Widgets';
-
-// let url = "http://localhost:1000"
-// let apiUrl = "http://localhost:1001"
-
-// if (!(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')) {
-//     url = "http://194.58.96.121:1000"
-//     apiUrl = "http://194.58.96.121:1001"
-// }
-
+import Links from '../../components/Links';
+import Proxies from '../../components/Proxies';
+import Logs from '../../components/Logs';
+import Widgets from '../../components/Widgets';
+import { apiUrl } from '../../utils/dashboard';
+import { AppContext } from '../../context/AppContext';
 
 const Dashboard = () => {
     const [isCreating, setIsCreating] = useState(false)
+    const {fetchAll} = useContext(AppContext)
 
     const createFailed = async () => {
         setIsCreating(true)
         try {
-            await axios.get(apiUrl + "/create-failed/all")
-            await fetchInitialData()
+            const {data} = await axios.get(apiUrl + "/create-failed/all")
+            await fetchAll()
+            alert("Создано " + data.addedItems + " офферов")
         } catch (e) {
             alert(e.message)
         }
+
         setIsCreating(false)
     }
 

@@ -1,6 +1,6 @@
 import React from "react"
 import LogsCollapse from "./LogsCollapse";
-import { Tr, Td} from '@strapi/design-system/Table';
+import { Tr } from '@strapi/design-system/Table';
 
 export default function LogsRow({ logs }) {
     return (<Tr>

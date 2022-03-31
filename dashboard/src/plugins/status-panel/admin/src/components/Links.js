@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
-import axios from "../../utils/axiosInstance"
-import { fetchData, startManualParsing } from '../../utils/dashboard';
+import React, { useEffect, useState, useContext } from "react"
+import axios from "../utils/axiosInstance"
+import { fetchData, startManualParsing } from '../utils/dashboard';
 import TableWrapper from "./TableWrapper";
 import { Tr, Td } from '@strapi/design-system/Table';
 import { Checkbox } from '@strapi/design-system/Checkbox';
@@ -11,6 +11,7 @@ import { Loader } from '@strapi/design-system/Loader';
 import { Stack } from '@strapi/design-system/Stack';
 import { ru } from "date-fns/locale";
 import LogsRow from "./LogsRow";
+import { AppContext } from "../context/AppContext";
 
 export default function Links() {
     const turnLinks = async (direction, selected) => {
@@ -40,12 +41,14 @@ export default function Links() {
     );
 }
 
-function LinkRow({ select, item, selected, refresh }) {
+function LinkRow({ select, item, selected }) {
     const [open, setOpen] = useState(false)
     const [logs, setLogs] = useState([])
     const [offersTotal, setOffersTotal] = useState(null)
     const [offersInBitrix, setOffersInBitrix] = useState(null)
     const [isRunning, setIsRunning] = useState(false)
+
+    const {fetchAll} = useContext(AppContext)
 
     const fetchCount = async () => {
         const inBitrix = await fetchData("offers", {
@@ -75,8 +78,9 @@ function LinkRow({ select, item, selected, refresh }) {
         setIsRunning(true)
         try {
             await startManualParsing(item.id)
-            if (refresh) await refresh()
+            await fetchAll()
         } catch (e) {
+            console.error(e)
             alert(e)
         }
         setIsRunning(false)

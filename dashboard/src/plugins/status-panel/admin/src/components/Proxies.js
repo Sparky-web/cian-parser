@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
-import { fetchData } from "../../utils/dashboard"
-import axios from "../../utils/axiosInstance"
+import React, { useEffect, useState, useContext } from "react"
+import { fetchData } from "../utils/dashboard"
+import axios from "../utils/axiosInstance"
 import { formatRelative } from "date-fns";
 import { ru } from "date-fns/locale";
 import { Tr, Td } from '@strapi/design-system/Table';
@@ -12,11 +12,12 @@ import TableWrapper from "./TableWrapper";
 import { Stack } from '@strapi/design-system/Stack';
 import { Textarea } from '@strapi/design-system/Textarea';
 import { Loader } from '@strapi/design-system/Loader';
-
+import { AppContext } from "../context/AppContext";
 
 export default function Proxies() {
     const [proxyString, setProxyString] = useState("")
     const [proxyLoading, setProxyLoading] = useState(false)
+    const {fetchAll} = useContext(AppContext)
 
     const addProxies = async () => {
         setProxyLoading(true)
@@ -27,8 +28,8 @@ export default function Proxies() {
             for (let proxy of arr) {
                 await axios.post("/api/proxies", { data: {proxy} })
             }
-
-            window.location.reload()
+            
+            await fetchAll()
         } catch (e) {
             console.error(e)
             alert(e)

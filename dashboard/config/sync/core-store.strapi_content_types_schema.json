@@ -1768,7 +1768,9 @@
           "unique": true
         },
         "inBitrix": {
-          "type": "boolean"
+          "type": "boolean",
+          "required": true,
+          "default": false
         },
         "contacts": {
           "type": "json"
@@ -1848,7 +1850,9 @@
             "unique": true
           },
           "inBitrix": {
-            "type": "boolean"
+            "type": "boolean",
+            "required": true,
+            "default": false
           },
           "contacts": {
             "type": "json"

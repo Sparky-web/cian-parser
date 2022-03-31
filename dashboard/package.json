@@ -4,17 +4,18 @@
   "version": "0.1.0",
   "description": "A Strapi application",
   "scripts": {
-    "develop": "strapi develop",
+    "develop": "strapi develop --watch-admin",
     "start": "strapi start",
     "build": "strapi build",
     "strapi": "strapi"
   },
   "dependencies": {
-    "@strapi/plugin-i18n": "4.1.5",
-    "@strapi/plugin-users-permissions": "4.1.5",
-    "@strapi/strapi": "4.1.5",
+    "@strapi/plugin-i18n": "4.1.6",
+    "@strapi/plugin-users-permissions": "4.1.6",
+    "@strapi/strapi": "4.1.6",
     "date-fns": "^2.28.0",
     "querystring": "^0.2.1",
+    "react-if": "^4.1.1",
     "sqlite3": "5.0.2",
     "strapi-plugin-config-sync": "^1.0.0"
   },

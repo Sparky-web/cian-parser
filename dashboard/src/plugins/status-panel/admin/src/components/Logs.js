@@ -1,9 +1,7 @@
 import React from "react"
 import { useEffect, useState } from "react"
-import LogsCollapse from "./LogsCollapse";
-import { Stack } from '@strapi/design-system/Stack';
-import { Button, Box } from "@strapi/design-system"
-import { fetchData } from "../../utils/dashboard";
+import { Box } from "@strapi/design-system"
+import { fetchData } from "../utils/dashboard";
 import { Accordion, AccordionToggle, AccordionContent } from '@strapi/design-system/Accordion';
 import { LogsText } from "./LogsText";
 
@@ -29,7 +27,7 @@ export default function Logs() {
             <Accordion expanded={open} onToggle={() => setOpen(s => !s)}>
                 <AccordionToggle togglePosition="left" title="Все логи" />
                 <AccordionContent>
-                    <Box padding={3}>
+                    <Box padding={3} style={{overflowWrap: "anywhere"}}>
                         <LogsText logs={logs} />
                     </Box>
                 </AccordionContent>

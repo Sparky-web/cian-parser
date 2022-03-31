@@ -1,7 +1,7 @@
 import React from "react"
 import { formatRelative } from "date-fns"
-import { Typography } from '@strapi/design-system/Typography'
 import ru from "date-fns/locale/ru";
+import { Typography } from '@strapi/design-system/Typography'
 
 export function LogsText({logs}) {
     return <>
