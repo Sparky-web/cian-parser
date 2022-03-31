@@ -41,7 +41,7 @@ async function getFields(offer) {
         'TYPE_ID': offer.dealType === "sale" ? 'SALE' : offer.dealType === "rent" ? "1" : "",
         'UF_CRM_1600027262783': await getImages(offer),
         'CONTACT_ID': await getContactId(offer),
-        'UF_CRM_1597229563828': (offer.contacts[0].name || "Без имени") + ": " + offer.contacts.map(p => `${p.number}`).join(", ")
+        'UF_CRM_1597229563828': (offer.contacts?.[0]?.name || "Без имени") + ": " + offer.contacts?.map(p => `${p.number}`)?.join(", ") || ""
     }
 }
 
