@@ -192,7 +192,7 @@ async function parseItems(url, options = {}) {
     let html = res.data
     const document = getDocument(html)
 
-    let js = [...document.querySelectorAll("script")].filter(e => e.innerHTML.match(/frontend-serp/g))[1].innerHTML
+    let js = [...document.querySelectorAll("head script")].filter(e => e.innerHTML)[6].innerHTML
     let config = JSON.parse(js.substring(js.indexOf("["), js.lastIndexOf("]") + 1).match(/(?<== ).*/ig)[0])
     let initialState = _.find(config, { key: "initialState" })
     let { value: { results: { offers: offers } } } = initialState
