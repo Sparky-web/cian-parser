@@ -28,7 +28,7 @@ async function getFields(offer) {
     const parsedFromLink = offer.parsedFromLink?.data?.attributes
 
     return {
-        TITLE: `Парсер ${parsedFromLink.name || ""} ${offer.floorNumber}эт. за ${offer.price} ₽`,
+        TITLE: `Парсер ${parsedFromLink?.name || ""} ${offer.floorNumber}эт. за ${offer.price} ₽`,
         'CATEGORY_ID': 9,
         'STAGE_ID': 'C9:14',
         'SOURCE_ID': 79690882901,
