@@ -30,6 +30,7 @@ const Dashboard = () => {
             await fetchAll()
             alert("Создано " + data.addedItems + " офферов")
         } catch (e) {
+            console.log(e)
             alert(e.message)
         }
 

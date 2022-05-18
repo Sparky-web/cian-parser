@@ -96,8 +96,8 @@ app.get("/create-failed/:linkId", async (req, res) => {
         const { linkId } = req.params
 
         const offers = linkId === "all" ?
-            await strapi.get("offers", { filters: { inBitrix: false } }) :
-            await strapi.get("offers", { filters: { parsedFromLink: linkId, inBitrix: false } })
+            await strapi.get("offers", { filters: { inBitrix: false }, populate: "*" }) :
+            await strapi.get("offers", { filters: { parsedFromLink: linkId, inBitrix: false, populate: "*" } })
 
         const created = []
 

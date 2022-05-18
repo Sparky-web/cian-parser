@@ -1781,6 +1781,12 @@
           "target": "api::link.link",
           "inversedBy": "offers"
         },
+        "price": {
+          "type": "integer"
+        },
+        "floorNumber": {
+          "type": "integer"
+        },
         "createdAt": {
           "type": "datetime"
         },
@@ -1862,6 +1868,12 @@
             "relation": "manyToOne",
             "target": "api::link.link",
             "inversedBy": "offers"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "floorNumber": {
+            "type": "integer"
           }
         },
         "kind": "collectionType"

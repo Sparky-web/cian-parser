@@ -383,5 +383,6 @@ export default {
     stop,
     parseUrl,
     updateOneUrl,
+    parseOneUrl,
     parseItem
 }

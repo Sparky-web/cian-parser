@@ -25,14 +25,16 @@ export async function remind(offer) {
 }
 
 async function getFields(offer) {
+    const parsedFromLink = offer.parsedFromLink?.data?.attributes
+
     return {
-        TITLE: `Парсер ${offer.parsedFromLink?.name || ""} ${offer.floorNumber}эт. за ${offer.price} ₽`,
+        TITLE: `Парсер ${parsedFromLink.name || ""} ${offer.floorNumber}эт. за ${offer.price} ₽`,
         'CATEGORY_ID': 9,
         'STAGE_ID': 'C9:14',
         'SOURCE_ID': 79690882901,
         'UF_CRM_1580558162': [offer.link],
         'UF_CRM_1584562039332': offer.price,
-        'ASSIGNED_BY_ID': offer.parsedFromLink?.responsible,
+        'ASSIGNED_BY_ID': parsedFromLink?.responsible,
         'UF_CRM_1584528376285': offer.floorNumber,
         'UF_CRM_1584528390316': offer.area,
         'UF_CRM_1584957840330': offer.description,
@@ -100,6 +102,14 @@ async function getImages(offer) {
     return images
 }
 
+const safeJSONParse = (str) => {
+    try {
+        return JSON.parse(str)
+    } catch(e) {
+        return str
+    }
+}
+
 export async function createEntry(offer, retries = 3) {
     try {
         const params = await getFields(offer)
@@ -113,13 +123,14 @@ export async function createEntry(offer, retries = 3) {
         })
         return data
     } catch (e) {
-        const resData = e?.response?.data ? e?.response?.data : (e.stack || e.message)
+        const resData = e?.response?.data ? safeJSONParse(e?.response?.data) : (e.stack || e.message)
         if (retries < 1) throw new Error(`Couldn't create deal with id: ${offer.id}, retries count exeeded. ${resData}`)
         logger.error("Couldn't create deal, retrying. " + resData)
         await new Promise(r => setTimeout(r, 500))
         return createEntry(offer, retries - 1)
     }
 }
+
 
 export async function updateEntry(offer, dealId) {
     const params = await getFields(offer)

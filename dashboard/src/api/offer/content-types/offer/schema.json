@@ -53,6 +53,12 @@
       "relation": "manyToOne",
       "target": "api::link.link",
       "inversedBy": "offers"
+    },
+    "price": {
+      "type": "integer"
+    },
+    "floorNumber": {
+      "type": "integer"
     }
   }
 }

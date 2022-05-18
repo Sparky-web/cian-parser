@@ -181,7 +181,9 @@
           "uId",
           "inBitrix",
           "contacts",
-          "parsedFromLink"
+          "parsedFromLink",
+          "price",
+          "floorNumber"
         ]
       },
       "conditions": []
@@ -208,7 +210,9 @@
           "uId",
           "inBitrix",
           "contacts",
-          "parsedFromLink"
+          "parsedFromLink",
+          "price",
+          "floorNumber"
         ]
       },
       "conditions": []
@@ -229,7 +233,9 @@
           "uId",
           "inBitrix",
           "contacts",
-          "parsedFromLink"
+          "parsedFromLink",
+          "price",
+          "floorNumber"
         ]
       },
       "conditions": []
