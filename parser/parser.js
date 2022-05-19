@@ -254,6 +254,7 @@ async function addOffers(offers, link) {
     for (let offer of newOffers) {
         createdOffers.push(await strapi.create("offers", offer))
     }
+    
     if (link.shouldAddToBitrix) {
         for (let offer of createdOffers) {
             try {

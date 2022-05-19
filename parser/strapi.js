@@ -16,14 +16,15 @@ export async function get(type, filters, options = {}) {
 }
 
 export async function create(type, data, options = {}) {
-    const { data: {data: res} } = await axios.post(`/${type}`, {data}, options)
-    return res
+    const { data: { data: res } } = await axios.post(`/${type}`, { data }, options)
+    return {id: res.id, ...res.attributes}
 }
 
 export async function update(type, data, options = {}) {
-    const { data: res } = await axios.put(`/${type}/${data.id}`, {data}, options)
-    return res
+    const { data : {data: res} } = await axios.put(`/${type}/${data.id}`, { data }, options)
+    return {id: res.id, ...res.attributes}
 }
+
 
 export default { create, get, update }
 
