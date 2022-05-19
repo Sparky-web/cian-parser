@@ -118,12 +118,12 @@ export async function createEntry(offer, retries = 3) {
 
         logger.info(`Created deal with id: ${data.result}. Cian offer: ${offer.link}`)
         await strapi.update("offers", {
-            ...offer,
+            id: offer.id,
             inBitrix: true
         })
         return data
     } catch (e) {
-        const resData = e?.response?.data ? safeJSONParse(e?.response?.data) : (e.stack || e.message)
+        const resData = e?.response?.data && e.response.data !== "[]" ? safeJSONParse(e?.response?.data) : (e.stack || e.message)
         if (retries < 1) throw new Error(`Couldn't create deal with id: ${offer.id}, retries count exeeded. ${resData}`)
         logger.error("Couldn't create deal, retrying. " + resData)
         await new Promise(r => setTimeout(r, 500))
