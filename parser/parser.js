@@ -239,7 +239,8 @@ async function addOffers(offers, link) {
             uId: {
                 $in: uIds
             }
-        }
+        },
+        populate: "*"
     })
 
     const oldUIds = _.map(oldOffers, "uId")
@@ -258,7 +259,7 @@ async function addOffers(offers, link) {
     if (link.shouldAddToBitrix) {
         for (let offer of createdOffers) {
             try {
-                await bx24.createEntry(offer)
+                await bx24.createEntry({...offer, parsedFromLink: {data: {attributes: link}, id: link.id}})
                 await new Promise(r => setTimeout(r, 500))
             } catch (e) {
                 logger.error({

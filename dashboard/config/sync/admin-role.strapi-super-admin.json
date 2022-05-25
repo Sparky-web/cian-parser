@@ -183,7 +183,8 @@
           "contacts",
           "parsedFromLink",
           "price",
-          "floorNumber"
+          "floorNumber",
+          "area"
         ]
       },
       "conditions": []
@@ -212,7 +213,8 @@
           "contacts",
           "parsedFromLink",
           "price",
-          "floorNumber"
+          "floorNumber",
+          "area"
         ]
       },
       "conditions": []
@@ -235,7 +237,8 @@
           "contacts",
           "parsedFromLink",
           "price",
-          "floorNumber"
+          "floorNumber",
+          "area"
         ]
       },
       "conditions": []

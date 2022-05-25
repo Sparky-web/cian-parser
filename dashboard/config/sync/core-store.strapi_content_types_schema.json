@@ -1787,6 +1787,9 @@
         "floorNumber": {
           "type": "integer"
         },
+        "area": {
+          "type": "integer"
+        },
         "createdAt": {
           "type": "datetime"
         },
@@ -1873,6 +1876,9 @@
             "type": "integer"
           },
           "floorNumber": {
+            "type": "integer"
+          },
+          "area": {
             "type": "integer"
           }
         },
