@@ -82,8 +82,9 @@ app.get("/start-manual", async (req, res) => {
         const data = await parser.parseUrl(link)
         res.send(data)
     } catch (e) {
+        console.error(e)
         res.status(500)
-        res.send("Error: " + e.message)
+        res.send(e.stack || e.message || e)
     }
 })
 
