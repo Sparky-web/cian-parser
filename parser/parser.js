@@ -182,7 +182,7 @@ function serializeOffer(offer, document) {
             name: offer.user?.agencyName || offer.user?.companyName || `ID ${offer.user?.cianUserId}`
         })),
         floorNumber: offer.floorNumber,
-        area: offer.totalArea,
+        area: +offer.totalArea,
         dealType: offer.dealType
     })
 }
@@ -234,7 +234,7 @@ async function parseItem(url, responsible) {
 async function addOffers(offers, link) {
     const uIds = _.map(offers, "uId")
     const oldOffers = await strapi.get("offers", {
-        pagination: { page: 1, pageSize: 500 }, 
+        pagination: { page: 1, pageSize: 500 },
         filters: {
             uId: {
                 $in: uIds
@@ -253,13 +253,17 @@ async function addOffers(offers, link) {
 
     const createdOffers = []
     for (let offer of newOffers) {
-        createdOffers.push(await strapi.create("offers", offer))
+        try {
+            createdOffers.push(await strapi.create("offers", offer))
+        } catch (e) {
+            console.dir(e?.response?.data)
+        }
     }
-    
+
     if (link.shouldAddToBitrix) {
         for (let offer of createdOffers) {
             try {
-                await bx24.createEntry({...offer, parsedFromLink: {data: {attributes: link}, id: link.id}})
+                await bx24.createEntry({ ...offer, parsedFromLink: { data: { attributes: link }, id: link.id } })
                 await new Promise(r => setTimeout(r, 500))
             } catch (e) {
                 logger.error({
@@ -278,7 +282,7 @@ async function parseUrl(link) {
 
     logger.info({ message: `Parsed started`, link: link.id })
 
-    proxies = await strapi.get("proxies", { filters: {isEnabled: true} })
+    proxies = await strapi.get("proxies", { filters: { isEnabled: true } })
     const pageCount = await getPageCount(link.url, link)
 
     logger.info({ message: `Got pages: ${pageCount}`, link: link.id })

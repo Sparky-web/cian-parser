@@ -61,7 +61,7 @@
       "type": "integer"
     },
     "area": {
-      "type": "integer"
+      "type": "decimal"
     }
   }
 }
