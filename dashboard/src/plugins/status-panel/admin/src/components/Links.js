@@ -108,7 +108,7 @@ function LinkRow({ select, item, selected }) {
 
 
     return (<>
-        <Tr background={item.attributes.lastParse.isError && "danger100"}>
+        <Tr background={item.attributes?.lastParse?.isError && "danger100"}>
             <Td><Checkbox checked={selected.includes(item.id)} onChange={() => {
                 select(item.id);
             }} /></Td>
