@@ -69,12 +69,12 @@ export const AppProvider = props => {
         setProxies(proxies)
 
         let data = links.sort((a, b) => new Date(b?.attributes?.lastParse?.time) - new Date(a?.attributes?.lastParse?.time))
-        data = data.filter(e => !e?.attributes?.lastParse.isError)
+        data = data.filter(e => !e?.attributes?.lastParse?.isError)
 
         setStats({
             errors, offersToday,
             offersTotal, activeProxies,
-            lastSucceededParse: data?.[0] ? new Date(data[0].attributes.lastParse.time) : null,
+            lastSucceededParse: data?.[0] ? new Date(data[0].attributes.lastParse?.time) : null,
             offersInBitrix
         })
     }
